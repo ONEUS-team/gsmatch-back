@@ -31,10 +31,10 @@ public class RequestEntity {
     private List<String> request_major;
 
     @Enumerated(EnumType.STRING)
-    private RequestType RequestType;
+    private RequestType requestType;
 
     @Enumerated(EnumType.STRING)
-    private RequestGender RequestGender;
+    private RequestGender requestGender;
 
     private enum RequestType {
         TYPE,
