@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import oneus.GSMATCH.user.entity.UserEntity;
+import oneus.GSMATCH.user.entity.UsersEntity;
 
 import java.util.List;
 
@@ -61,8 +61,8 @@ public class RequestEntity {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private UserEntity user;
+    @JoinColumn(name = "usersId")
+    private UsersEntity users;
 
 }
 

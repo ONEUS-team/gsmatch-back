@@ -13,12 +13,12 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user")
-public class UserEntity {
+@Table(name = "users")
+public class UsersEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "UserId")
-    private Long userId;
+    @Column(name = "UsersId")
+    private Long usersId;
 
     @Column(name = "name")
     private String name;
@@ -62,7 +62,7 @@ public class UserEntity {
         EDI;
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<RequestEntity> members = new ArrayList<>();
+    @OneToMany(mappedBy = "users", cascade = CascadeType.REMOVE)
+    private List<RequestEntity> users = new ArrayList<>();
 
 }
