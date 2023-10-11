@@ -62,7 +62,7 @@ public class RequestEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id")
-    private UsersEntity users;
+    private UsersEntity userId;
 
 }
 
