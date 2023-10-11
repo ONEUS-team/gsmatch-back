@@ -1,11 +1,9 @@
 package oneus.GSMATCH.domain.user.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
+import oneus.GSMATCH.global.util.UserRoleEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +12,10 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 @Table(name = "users")
 public class UserEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "users_id")
@@ -23,6 +23,9 @@ public class UserEntity {
 
     @Column(name = "name")
     private String name;
+
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
 
     @Column(name = "grade")
     private Integer grade;
