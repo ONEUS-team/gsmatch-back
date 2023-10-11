@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import oneus.GSMATCH.user.entity.UserEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,24 +16,38 @@ import java.util.List;
 public class RequestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "requestId")
+    private Long requestId;
 
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "content")
     private String content;
-    private Integer request_grade;
-    private Boolean request_only;
-    private Long author_id;
+
+    @Column(name = "requestGrade")
+    private Integer requestGrade;
+
+    @Column(name = "requestOnly")
+    private Boolean requestOnly;
+
+    @Column(name = "authorId")
+    private Long authorId;
 
     @ElementCollection
-    private List<Long> recipients_id;
+    @Column(name = "recipientsId")
+    private List<Long> recipientsId;
 
     @ElementCollection
-    private List<String> request_major;
+    @Column(name = "requestMajor")
+    private List<String> requestMajor;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "requestType")
     private RequestType requestType;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "requestGender")
     private RequestGender requestGender;
 
     private enum RequestType {
@@ -46,4 +60,9 @@ public class RequestEntity {
         FEMALE;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private UserEntity user;
+
 }
+
