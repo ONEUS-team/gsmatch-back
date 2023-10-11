@@ -3,6 +3,7 @@ package oneus.GSMATCH.domain.user.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
+import oneus.GSMATCH.domain.user.dto.request.SignupRequest;
 import oneus.GSMATCH.global.util.UserRoleEnum;
 
 import java.util.ArrayList;
@@ -28,7 +29,8 @@ public class UserEntity {
     private UserRoleEnum role;
 
     @Column(name = "grade")
-    private Integer grade;
+    @Enumerated(value = EnumType.STRING)
+    private SignupRequest.Grade grade;
 
     @Column(name = "password")
     private String password;
@@ -43,28 +45,17 @@ public class UserEntity {
     private Integer point;
 
     @ElementCollection
+    @Enumerated(EnumType.STRING)
     @Column(name = "major")
-    private List<String> major;
+    private List<SignupRequest.Major> major;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
-    private Gender gender;
+    private SignupRequest.Gender gender;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    private Type type;
-
-    private enum Gender {
-        MAN,
-        WOMAN;
-    }
-
-    private enum Type {
-        PORORO,
-        LUPI,
-        POBI,
-        EDI;
-    }
+    private SignupRequest.Type type;
 
     @OneToMany(mappedBy = "authorId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RequestEntity> requestList = new ArrayList<>();

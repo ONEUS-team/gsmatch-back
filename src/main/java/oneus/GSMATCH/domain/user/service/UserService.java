@@ -54,6 +54,13 @@ public class UserService {
                 .name(username)
                 .password(password)
                 .role(role)
+                .email(signupRequestDto.getEmail())
+                .grade(signupRequestDto.getGrade())
+                .gender(signupRequestDto.getGender())
+                .major(signupRequestDto.getMajor())
+                .type(signupRequestDto.getType())
+                .level(0)
+                .point(0)
                 .build();
 
         userRepository.save(user);

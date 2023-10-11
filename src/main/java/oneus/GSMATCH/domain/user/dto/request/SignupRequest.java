@@ -2,6 +2,7 @@ package oneus.GSMATCH.domain.user.dto.request;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
@@ -21,35 +22,39 @@ public class SignupRequest {
     @NotBlank
     private String password;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Grade grade;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private List<Major> major;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Type type;
 
     @Getter
     private boolean admin = false;
     private String adminToken = "";
 
 
-    private enum Grade {
+    public enum Grade {
         ONE,
         TWO,
         THREE;
     }
 
-    private enum Gender {
+    public enum Gender {
         MALE,
         FEMALE;
     }
 
-    private enum Major {
+    public enum Major {
         FRONT,
         BACK,
         DESIGN,
@@ -59,5 +64,12 @@ public class SignupRequest {
         WORLD_SKILL,
         IOT,
         AI;
+    }
+
+    public enum Type {
+        PORORO,
+        LUPI,
+        POBI,
+        EDI;
     }
 }
