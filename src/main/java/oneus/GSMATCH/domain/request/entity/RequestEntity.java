@@ -1,8 +1,8 @@
-package oneus.GSMATCH.request.entity;
+package oneus.GSMATCH.domain.request.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import oneus.GSMATCH.user.entity.UsersEntity;
+import oneus.GSMATCH.domain.user.entity.UserEntity;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "requests")
+@Table(name = "request")
 public class RequestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class RequestEntity {
 
     @ManyToOne
     @JoinColumn(name = "author_id")
-    private UsersEntity authorId;
+    private UserEntity authorId;
 
     @ElementCollection
     @Column(name = "recipients_id")

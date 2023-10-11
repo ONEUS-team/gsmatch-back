@@ -1,11 +1,11 @@
-package oneus.GSMATCH.user.entity;
+package oneus.GSMATCH.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import oneus.GSMATCH.request.entity.RequestEntity;
+import oneus.GSMATCH.domain.request.entity.RequestEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "users")
-public class UsersEntity {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "users_id")
