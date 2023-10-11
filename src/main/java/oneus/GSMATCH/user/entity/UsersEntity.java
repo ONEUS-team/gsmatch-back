@@ -62,7 +62,7 @@ public class UsersEntity {
         EDI;
     }
 
-    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "authorId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RequestEntity> requestList = new ArrayList<>();
 
 }

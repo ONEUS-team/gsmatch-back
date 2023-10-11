@@ -2,6 +2,7 @@ package oneus.GSMATCH.request.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import oneus.GSMATCH.user.entity.UsersEntity;
@@ -12,6 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "requests")
 public class RequestEntity {
     @Id
@@ -31,8 +33,9 @@ public class RequestEntity {
     @Column(name = "request_only")
     private Boolean requestOnly;
 
-    @Column(name = "author_id")
-    private Long authorId;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private UsersEntity authorId;
 
     @ElementCollection
     @Column(name = "recipients_id")
@@ -59,10 +62,5 @@ public class RequestEntity {
         MALE,
         FEMALE;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "users_id")
-    private UsersEntity userId;
-
 }
 
