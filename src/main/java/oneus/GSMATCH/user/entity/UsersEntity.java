@@ -62,7 +62,7 @@ public class UsersEntity {
         EDI;
     }
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.REMOVE)
-    private List<RequestEntity> users = new ArrayList<>();
+    @OneToMany(mappedBy = "requests", cascade = CascadeType.REMOVE)
+    private List<RequestEntity> requests = new ArrayList<>();
 
 }
