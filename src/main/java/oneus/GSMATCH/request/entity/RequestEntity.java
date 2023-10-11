@@ -16,7 +16,7 @@ import java.util.List;
 public class RequestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "requestId")
+    @Column(name = "request_id")
     private Long requestId;
 
     @Column(name = "title")
@@ -25,29 +25,29 @@ public class RequestEntity {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "requestGrade")
+    @Column(name = "request_grade")
     private Integer requestGrade;
 
-    @Column(name = "requestOnly")
+    @Column(name = "request_only")
     private Boolean requestOnly;
 
-    @Column(name = "authorId")
+    @Column(name = "author_id")
     private Long authorId;
 
     @ElementCollection
-    @Column(name = "recipientsId")
+    @Column(name = "recipients_id")
     private List<Long> recipientsId;
 
     @ElementCollection
-    @Column(name = "requestMajor")
+    @Column(name = "request_major")
     private List<String> requestMajor;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "requestType")
+    @Column(name = "request_type")
     private RequestType requestType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "requestGender")
+    @Column(name = "request_gender")
     private RequestGender requestGender;
 
     private enum RequestType {
@@ -61,7 +61,7 @@ public class RequestEntity {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usersId")
+    @JoinColumn(name = "users_id")
     private UsersEntity users;
 
 }
