@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
+import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,35 +42,4 @@ public class SignupRequest {
     @Getter
     private boolean admin = false;
     private String adminToken = "";
-
-
-    public enum Grade {
-        ONE,
-        TWO,
-        THREE;
-    }
-
-    public enum Gender {
-        MALE,
-        FEMALE;
-    }
-
-    public enum Major {
-        FRONT,
-        BACK,
-        DESIGN,
-        IOS,
-        AOS,
-        DEVOPS,
-        WORLD_SKILL,
-        IOT,
-        AI;
-    }
-
-    public enum Type {
-        PORORO,
-        LUPI,
-        POBI,
-        EDI;
-    }
 }
