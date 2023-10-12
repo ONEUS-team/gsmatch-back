@@ -35,8 +35,9 @@ public class UserService {
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
 
         // 회원 중복 확인
-        Optional<UserEntity> checkUsername = userRepository.findByName(username);
-        if (checkUsername.isPresent()) {
+        boolean isUserDuplicated = userRepository.existsByName(username);
+        if (isUserDuplicated) {
+            System.out.println("ㅈㅜㅇ복=-=--=-=--=-=-=-");
             throw new CustomException(DUPLICATED_USERNAME);
         }
 
