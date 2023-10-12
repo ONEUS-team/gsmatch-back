@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 @Table(name = "request")
 public class RequestEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
