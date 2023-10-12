@@ -9,6 +9,7 @@ import oneus.GSMATCH.domain.user.dto.request.SignupRequest;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.domain.user.service.UserService;
+import oneus.GSMATCH.global.jwt.JwtUtil;
 import oneus.GSMATCH.global.security.UserDetailsImpl;
 import oneus.GSMATCH.global.util.MsgResponseDto;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,8 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<MsgResponseDto> login(@RequestBody LoginRequest loginRequestDto, HttpServletResponse response) {
-        userService.login(loginRequestDto, response);
+        UserEntity user = userService.login(loginRequestDto);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, JwtUtil.createToken(user.getName(), user.getRole()));
         return ResponseEntity.ok(new MsgResponseDto("로그인 완료", HttpStatus.OK.value()));
     }
 

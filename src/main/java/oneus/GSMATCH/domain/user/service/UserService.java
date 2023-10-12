@@ -67,7 +67,7 @@ public class UserService {
     }
 
     // 로그인
-    public void login(LoginRequest loginRequestDto, HttpServletResponse response) {
+    public UserEntity login(LoginRequest loginRequestDto) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
@@ -80,8 +80,7 @@ public class UserService {
             throw new CustomException(NOT_MATCH_INFORMATION);
         }
 
-        // Header 에 key 값과 Token 담기
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, JwtUtil.createToken(user.getName(), user.getRole()));
+        return user;
     }
 
     // 회원탈퇴
