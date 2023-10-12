@@ -37,7 +37,6 @@ public class UserService {
         // 회원 중복 확인
         boolean isUserDuplicated = userRepository.existsByName(username);
         if (isUserDuplicated) {
-            System.out.println("ㅈㅜㅇ복=-=--=-=--=-=-=-");
             throw new CustomException(DUPLICATED_USERNAME);
         }
 
@@ -72,19 +71,17 @@ public class UserService {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
-        Optional<UserEntity> user = userRepository.findByName(username);
-
-        if (user.isEmpty()) {
-            throw new CustomException(NOT_MATCH_INFORMATION);
-        }
+        UserEntity user = userRepository.findByName(username).orElseThrow(
+                () -> new CustomException(NOT_MATCH_INFORMATION)
+        );
 
         // 비밀번호 일치 여부 확인
-        if (!passwordEncoder.matches(password, user.get().getPassword())) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new CustomException(NOT_MATCH_INFORMATION);
         }
 
         // Header 에 key 값과 Token 담기
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, JwtUtil.createToken(user.get().getName(), user.get().getRole()));
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, JwtUtil.createToken(user.getName(), user.getRole()));
     }
 
     // 회원탈퇴
