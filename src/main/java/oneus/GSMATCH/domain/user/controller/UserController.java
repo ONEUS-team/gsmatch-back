@@ -28,7 +28,7 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<MsgResponseDto> signup(@RequestBody @Valid SignupRequest request) {
         userService.signup(request);
-        return ResponseEntity.ok(new MsgResponseDto("회원가입 완료", HttpStatus.OK.value()));
+        return ResponseEntity.ok(new MsgResponseDto("회원가입 완료", HttpStatus.CREATED.value()));
     }
 
     // 로그인
@@ -42,6 +42,6 @@ public class UserController {
     @DeleteMapping
     private ResponseEntity<MsgResponseDto> signOut(@RequestBody SignOutRequest signOutRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.signOut(signOutRequestDto, userDetails.getUser());
-        return ResponseEntity.ok(new MsgResponseDto("회원탈퇴 완료", HttpStatus.OK.value()));
+        return ResponseEntity.ok(new MsgResponseDto("회원탈퇴 완료", HttpStatus.RESET_CONTENT.value()));
     }
 }
