@@ -23,7 +23,6 @@ import java.util.List;
 @RequestMapping("/api/auth")
 public class UserController {
     private final UserService userService;
-    private final UserRepository userRepository;
 
     // 회원 가입
     @PostMapping("/signup")
@@ -40,14 +39,9 @@ public class UserController {
     }
 
     // 회원 탈퇴
-    @DeleteMapping("/signout")
+    @DeleteMapping
     private ResponseEntity<MsgResponseDto> signOut(@RequestBody SignOutRequest signOutRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.signOut(signOutRequestDto, userDetails.getUser());
         return ResponseEntity.ok(new MsgResponseDto("회원탈퇴 완료", HttpStatus.OK.value()));
-    }
-
-    @GetMapping("/a")
-    public ResponseEntity<List<UserEntity>> a() {
-        return ResponseEntity.ok(userRepository.findAll());
     }
 }
