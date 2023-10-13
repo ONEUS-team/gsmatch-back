@@ -3,7 +3,9 @@ package oneus.GSMATCH.domain.request.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
+import oneus.GSMATCH.image.ImageEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -60,5 +62,9 @@ public class RequestEntity {
         MALE,
         FEMALE;
     }
+
+    @OneToMany(mappedBy = "requestId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImageEntity> requestImagesList;
+
 }
 
