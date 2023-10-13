@@ -3,6 +3,7 @@ package oneus.GSMATCH.domain.request.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
+import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class RequestEntity {
 
     @ElementCollection
     @Column(name = "request_major")
-    private List<String> requestMajor;
+    private List<Major> requestMajor;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "request_type")
@@ -49,16 +50,11 @@ public class RequestEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "request_gender")
-    private RequestGender requestGender;
+    private Gender requestGender;
 
     private enum RequestType {
         TYPE,
         STUDY;
-    }
-
-    private enum RequestGender {
-        MALE,
-        FEMALE;
     }
 }
 
