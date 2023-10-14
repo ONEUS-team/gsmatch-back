@@ -23,6 +23,4 @@ public class ImageEntity {
     @ManyToOne
     @JoinColumn(name = "request_id")
     private RequestEntity requestId;
-
-
 }
