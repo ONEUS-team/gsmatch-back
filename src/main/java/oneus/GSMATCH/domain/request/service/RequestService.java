@@ -55,6 +55,10 @@ public class RequestService {
                 .build();
 
         requestRepository.save(requestEntity);
+
+        UserEntity newUser = userRepository.findById(userEntity.getUsersId()).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
+        newUser.setRequestList(requestRepository.findByAuthorId(newUser).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION)));
+        userRepository.save(newUser);
     }
 
 

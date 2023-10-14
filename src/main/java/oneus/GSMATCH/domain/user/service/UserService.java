@@ -100,4 +100,6 @@ public class UserService {
 
         userRepository.deleteById(user.getUsersId());
     }
+
+    // 유저 정보 반환
 }

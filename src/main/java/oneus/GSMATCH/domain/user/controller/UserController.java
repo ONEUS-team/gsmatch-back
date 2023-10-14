@@ -46,4 +46,6 @@ public class UserController {
         userService.signOut(signOutRequestDto, userDetails.getUser());
         return ResponseEntity.ok(new MsgResponseDto("회원탈퇴 완료", HttpStatus.RESET_CONTENT.value()));
     }
+
+    private final UserRepository userRepository;
 }
