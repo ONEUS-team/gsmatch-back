@@ -26,7 +26,7 @@ public class RequestService {
 
 
     public List<RequestsResponse> findRequests(UserEntity user) {
-        List<RequestsResponse> requests = requestRepository.findByAuthorId(user)
+        return requestRepository.findByAuthorId(user)
                 .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION))
                 .stream()
                 .map(item -> RequestsResponse.builder()
@@ -36,11 +36,11 @@ public class RequestService {
                         .author_name(userRepository.findById(item.getAuthorId().getUsersId()).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION)).getName())
                         .build())
                 .collect(Collectors.toList());
-
-        return requests;
     }
 
     public void saveRequest(CreateRequest createRequest, UserEntity userEntity) {
+
+        ableSendRequest(userEntity);
 
         // 요청 받을 사람을 구하는 로직
 
@@ -58,6 +58,13 @@ public class RequestService {
     }
 
 
-
+    // 요청이 3개 이상인지 검증
+    public void ableSendRequest(UserEntity user) {
+        if (requestRepository.findByAuthorId(user)
+                .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION))
+                .size() >= 3) {
+            throw new CustomException(MANY_REQUEST);
+        }
+    }
 
 }
