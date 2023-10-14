@@ -51,10 +51,5 @@ public class RequestEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "request_gender")
     private Gender requestGender;
-
-    private enum RequestType {
-        TYPE,
-        STUDY;
-    }
 }
 

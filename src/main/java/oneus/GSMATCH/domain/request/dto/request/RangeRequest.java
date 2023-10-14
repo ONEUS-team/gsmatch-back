@@ -1,10 +1,12 @@
 package oneus.GSMATCH.domain.request.dto.request;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import oneus.GSMATCH.global.util.UserStateEnum;
+import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 import java.util.List;
 
@@ -15,12 +17,16 @@ public class RangeRequest {
     private String title;
     @NotBlank
     private String content;
-    @NotBlank
-    private UserStateEnum.Type request_type;
-    @NotBlank
-    private UserStateEnum.Grade request_grade;
-    @NotBlank
-    private UserStateEnum.Gender request_gender;
-    @NotBlank
-    private List<UserStateEnum.Major> request_major;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private RequestType request_type;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Grade request_grade;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Gender request_gender;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private List<Major> request_major;
 }

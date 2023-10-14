@@ -30,4 +30,9 @@ public class UserStateEnum {
         POBI,
         EDI;
     }
+
+    public enum RequestType {
+        TYPE,
+        STUDY;
+    }
 }
