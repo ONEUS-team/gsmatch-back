@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -61,6 +62,7 @@ public class UserService {
                 .type(signupRequestDto.getType())
                 .level(1) // default 레벨 1
                 .point(0) // default 포인트 0
+                .requestList(Collections.emptyList())
                 .build();
 
         userRepository.save(user);
