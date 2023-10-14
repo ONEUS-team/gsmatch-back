@@ -2,17 +2,43 @@ package oneus.GSMATCH.domain.request.service;
 
 import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.request.dto.request.CreateRequest;
+import oneus.GSMATCH.domain.request.dto.response.RequestsResponse;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
 import oneus.GSMATCH.domain.request.repository.RequestRepository;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
-import oneus.GSMATCH.global.security.UserDetailsImpl;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import oneus.GSMATCH.domain.user.repository.UserRepository;
+import oneus.GSMATCH.global.exception.CustomException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static oneus.GSMATCH.global.exception.ErrorCode.MANY_REQUEST;
+import static oneus.GSMATCH.global.exception.ErrorCode.NOT_MATCH_INFORMATION;
 
 @Service
 @RequiredArgsConstructor
 public class RequestService {
     private final RequestRepository requestRepository;
+    private final UserRepository userRepository;
+
+
+    public List<RequestsResponse> findRequests(UserEntity user) {
+        List<RequestsResponse> requests = requestRepository.findByAuthorId(user)
+                .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION))
+                .stream()
+                .map(item -> RequestsResponse.builder()
+                        .title(item.getTitle())
+                        .content(item.getContent())
+                        .request_type(item.getRequestType())
+                        .author_name(userRepository.findById(item.getAuthorId().getUsersId()).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION)).getName())
+                        .build())
+                .collect(Collectors.toList());
+
+        return requests;
+    }
 
     public void saveRequest(CreateRequest createRequest, UserEntity userEntity) {
 
@@ -30,5 +56,8 @@ public class RequestService {
 
         requestRepository.save(requestEntity);
     }
+
+
+
 
 }

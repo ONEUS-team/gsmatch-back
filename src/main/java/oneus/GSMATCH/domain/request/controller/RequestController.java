@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.request.dto.request.CreateRequest;
 import oneus.GSMATCH.domain.request.dto.request.RangeRequest;
 import oneus.GSMATCH.domain.request.dto.response.RangeResponse;
+import oneus.GSMATCH.domain.request.dto.response.RequestsResponse;
 import oneus.GSMATCH.domain.request.service.RequestService;
 import oneus.GSMATCH.global.security.UserDetailsImpl;
 import oneus.GSMATCH.global.util.MsgResponseDto;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,5 +33,14 @@ public class RequestController {
     public ResponseEntity<String> rangeRequest(@RequestBody @Valid RangeRequest request) {
 
         return ResponseEntity.ok("ok");
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RequestsResponse>> findRequests(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<RequestsResponse> requestsResponses = requestService.findRequests(userDetails.getUser());
+
+        System.out.println(requestsResponses.size());
+
+        return ResponseEntity.ok(requestsResponses);
     }
 }
