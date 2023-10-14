@@ -18,7 +18,7 @@ public class RequestController {
     @PostMapping
     public ResponseEntity<MsgResponseDto> createRequest(@RequestBody @Valid CreateRequest request) {
 
-        return ResponseEntity.ok(new MsgResponseDto("요청 보내기 완료!", HttpStatus.CREATED.value()));
+        return ResponseEntity.ok(new MsgResponseDto("요청 보내기 완료", HttpStatus.CREATED.value()));
     }
 
     @PostMapping("/range")
