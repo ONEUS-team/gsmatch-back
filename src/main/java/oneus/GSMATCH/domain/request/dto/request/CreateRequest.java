@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import oneus.GSMATCH.domain.request.entity.RequestEntity;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 

@@ -26,8 +26,9 @@ public class RequestEntity {
     @Column(name = "content")
     private String content;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "request_grade")
-    private Integer requestGrade;
+    private Grade requestGrade;
 
     @Column(name = "request_only")
     private Boolean requestOnly;
