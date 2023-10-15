@@ -10,6 +10,7 @@ import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,18 +27,19 @@ public class RequestService {
 
 
     public List<RequestsResponse> findRequests(UserEntity user) {
-        return requestRepository.findByAuthorId(user)
+        return requestRepository.findByAuthor(user)
                 .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION))
                 .stream()
                 .map(item -> RequestsResponse.builder()
                         .title(item.getTitle())
                         .content(item.getContent())
                         .request_type(item.getRequestType())
-                        .author_name(userRepository.findById(item.getAuthorId().getUsersId()).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION)).getName())
+                        .author_name(item.getAuthor().getName())
                         .build())
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void saveRequest(CreateRequest createRequest, UserEntity userEntity) {
 
         ableSendRequest(userEntity);
@@ -51,20 +53,21 @@ public class RequestService {
                 .requestGrade(createRequest.getRequest_grade())
                 .requestGender(createRequest.getRequest_gender())
                 .requestMajor(createRequest.getRequest_major())
-                .authorId(userEntity)
+                .author(userEntity)
                 .build();
+
 
         requestRepository.save(requestEntity);
 
-        UserEntity newUser = userRepository.findById(userEntity.getUsersId()).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
-        newUser.setRequestList(requestRepository.findByAuthorId(newUser).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION)));
-        userRepository.save(newUser);
+//        UserEntity newUser = userRepository.findById(userEntity.getUsersId()).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
+//        newUser.setRequestList(requestRepository.findByAuthorId(newUser).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION)));
+//        userRepository.save(newUser);
     }
 
 
     // 요청이 3개 이상인지 검증
     public void ableSendRequest(UserEntity user) {
-        if (requestRepository.findByAuthorId(user)
+        if (requestRepository.findByAuthor(user)
                 .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION))
                 .size() >= 3) {
             throw new CustomException(MANY_REQUEST);

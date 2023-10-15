@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.user.dto.request.LoginRequest;
 import oneus.GSMATCH.domain.user.dto.request.SignOutRequest;
 import oneus.GSMATCH.domain.user.dto.request.SignupRequest;
+import oneus.GSMATCH.domain.user.dto.response.UserInfoResponse;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
@@ -102,4 +103,18 @@ public class UserService {
     }
 
     // 유저 정보 반환
+    public UserInfoResponse findUserInfo(UserEntity user) {
+        UserEntity toDtoUser = userRepository.findById(user.getUsersId()).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
+
+        return UserInfoResponse.builder()
+                .name(toDtoUser.getName())
+                .gender(toDtoUser.getGender())
+                .grade(toDtoUser.getGrade())
+                .level(toDtoUser.getLevel())
+                .point(toDtoUser.getPoint())
+                .major(toDtoUser.getMajor())
+                .type(toDtoUser.getType())
+                .requestList(toDtoUser.getRequestList())
+                .build();
+    }
 }

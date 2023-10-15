@@ -1,5 +1,8 @@
 package oneus.GSMATCH.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
@@ -58,8 +61,8 @@ public class UserEntity {
     @Column(name = "type")
     private Type type;
 
-    @OneToMany(mappedBy = "authorId", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RequestEntity> requestList;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RequestEntity> requestList = new ArrayList<>();
 
     public void setRequestList(List<RequestEntity> requestList) {
         this.requestList = requestList;
