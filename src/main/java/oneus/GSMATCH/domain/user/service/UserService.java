@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.user.dto.request.LoginRequest;
 import oneus.GSMATCH.domain.user.dto.request.SignOutRequest;
 import oneus.GSMATCH.domain.user.dto.request.SignupRequest;
+import oneus.GSMATCH.domain.user.dto.response.RequestsResponse;
 import oneus.GSMATCH.domain.user.dto.response.UserInfoResponse;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
@@ -21,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -107,14 +109,22 @@ public class UserService {
         UserEntity toDtoUser = userRepository.findById(user.getUsersId()).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
 
         return UserInfoResponse.builder()
-                .name(toDtoUser.getName())
+                .id(toDtoUser.getUsersId())
+                .username(toDtoUser.getName())
                 .gender(toDtoUser.getGender())
                 .grade(toDtoUser.getGrade())
                 .level(toDtoUser.getLevel())
                 .point(toDtoUser.getPoint())
                 .major(toDtoUser.getMajor())
                 .type(toDtoUser.getType())
-                .requestList(toDtoUser.getRequestList())
+                .request_list(toDtoUser.getRequestList().stream()
+                        .map(request -> RequestsResponse.builder()
+                                .request_id(request.getRequestId())
+                                .title(request.getTitle())
+                                .content(request.getContent())
+                                .request_type(request.getRequestType())
+                                .author_name(request.getAuthor().getName())
+                                .build()).collect(Collectors.toList()))
                 .build();
     }
 }

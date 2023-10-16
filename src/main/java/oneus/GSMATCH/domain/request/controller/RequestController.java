@@ -39,8 +39,6 @@ public class RequestController {
     public ResponseEntity<List<RequestsResponse>> findRequests(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<RequestsResponse> requestsResponses = requestService.findRequests(userDetails.getUser());
 
-        System.out.println(requestsResponses.size());
-
         return ResponseEntity.ok(requestsResponses);
     }
 }

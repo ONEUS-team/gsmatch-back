@@ -16,12 +16,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class UserInfoResponse {
-    private String name;
+    private Long id;
+    private String username;
     private Grade grade;
     private Integer level;
     private Integer point;
     private List<Major> major;
     private Gender gender;
     private Type type;
-    private List<RequestEntity> requestList;
+    private List<RequestsResponse> request_list;
 }
