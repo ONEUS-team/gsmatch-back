@@ -12,6 +12,7 @@ import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 @Entity
 @Getter
@@ -48,10 +49,9 @@ public class UserEntity {
     @Column(name = "point")
     private Integer point;
 
-    @ElementCollection
     @Enumerated(EnumType.STRING)
     @Column(name = "major")
-    private List<Major> major;
+    private Major major;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")

@@ -1,13 +1,16 @@
 package oneus.GSMATCH.global.util;
 
 public class UserStateEnum {
+
     public enum Grade {
+        ALL,
         ONE,
         TWO,
         THREE;
     }
 
     public enum Gender {
+        ALL,
         MALE,
         FEMALE;
     }

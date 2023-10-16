@@ -21,7 +21,7 @@ public class UserInfoResponse {
     private Grade grade;
     private Integer level;
     private Integer point;
-    private List<Major> major;
+    private Major major;
     private Gender gender;
     private Type type;
     private List<RequestsResponse> request_list;

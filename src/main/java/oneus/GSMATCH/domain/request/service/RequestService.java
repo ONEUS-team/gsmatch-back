@@ -1,26 +1,33 @@
 package oneus.GSMATCH.domain.request.service;
 
 import lombok.RequiredArgsConstructor;
-import oneus.GSMATCH.domain.request.dto.request.CreateRequest;
+import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
+import oneus.GSMATCH.domain.request.dto.response.RangeResponse;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
 import oneus.GSMATCH.domain.request.repository.RequestRepository;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
+import oneus.GSMATCH.global.util.UserStateEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static oneus.GSMATCH.global.exception.ErrorCode.*;
+import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 @Service
 @RequiredArgsConstructor
 public class RequestService {
     private final RequestRepository requestRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public void saveRequest(CreateRequest createRequest, UserEntity userEntity) {
+    public void saveRequest(RequestRequest createRequest, UserEntity userEntity) {
 
         ableSendRequest(userEntity);
 
@@ -41,6 +48,13 @@ public class RequestService {
     }
 
     @Transactional
+    public RangeResponse rangeRequest(RequestRequest requestRequest, UserEntity userEntity) {
+        ableSendRequest(userEntity);
+        List<Long> recipientsList = findRecipientsId(requestRequest, userEntity.getType(), userEntity.getUsersId());
+        return new RangeResponse(recipientsList.size());
+    }
+
+    @Transactional
     public void deleteRequest(Long requestId, UserEntity user) {
 
         // 존재하는 요청인지 검증
@@ -57,7 +71,7 @@ public class RequestService {
 
 
     // 요청이 3개 이상인지 검증
-    public void ableSendRequest(UserEntity user) {
+    private void ableSendRequest(UserEntity user) {
         if (requestRepository.findByAuthor(user)
                 .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION))
                 .size() >= 3) {
@@ -65,4 +79,32 @@ public class RequestService {
         }
     }
 
+    // 요청을 받는 사용자 특정
+    private List<Long> findRecipientsId(RequestRequest request, Type userType, Long userId) {
+
+        List<Long> userIdList = new ArrayList<>();
+
+        if (request.getRequest_type().equals(RequestType.TYPE)) {
+            if (request.getRequest_grade().equals(Grade.ALL)) {
+                userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(Grade.ALL, userType, userId).stream()
+                        .map(UserEntity::getUsersId).toList();
+            } else if  (request.getRequest_grade().equals(Grade.ONE)) {
+                userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(Grade.ONE, userType, userId).stream()
+                        .map(UserEntity::getUsersId).toList();
+            } else if  (request.getRequest_grade().equals(Grade.TWO)) {
+                userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(Grade.TWO, userType, userId).stream()
+                        .map(UserEntity::getUsersId).toList();
+            } else if  (request.getRequest_grade().equals(Grade.THREE)) {
+                userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(Grade.THREE, userType, userId).stream()
+                        .map(UserEntity::getUsersId).toList();
+            }
+        } else if (request.getRequest_type().equals(RequestType.STUDY)) {
+            userIdList = userRepository.findByMajorInAndUsersIdNot(request.getRequest_major(), userId).stream()
+                    .map(UserEntity::getUsersId).toList();
+        } else {
+            throw new CustomException(NOT_OK_REQUEST);
+        }
+
+        return userIdList;
+    }
 }
