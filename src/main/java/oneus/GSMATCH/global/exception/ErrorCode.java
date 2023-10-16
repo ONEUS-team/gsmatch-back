@@ -16,6 +16,8 @@ public enum ErrorCode {
 
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "토큰이 유효하지 않습니다."),
 
+    NOT_OK_REQUEST(HttpStatus.BAD_REQUEST, "유요한 요청이 아닙니다."),
+
     MANY_REQUEST(HttpStatus.BAD_REQUEST, "요청은 한번에 3개를 초과할 수 없습니다.");
 
     private final HttpStatus httpStatus;

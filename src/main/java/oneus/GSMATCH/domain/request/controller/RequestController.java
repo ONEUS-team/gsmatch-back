@@ -4,8 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.request.dto.request.CreateRequest;
 import oneus.GSMATCH.domain.request.dto.request.RangeRequest;
-import oneus.GSMATCH.domain.request.dto.response.RangeResponse;
-import oneus.GSMATCH.domain.request.dto.response.RequestsResponse;
 import oneus.GSMATCH.domain.request.service.RequestService;
 import oneus.GSMATCH.global.security.UserDetailsImpl;
 import oneus.GSMATCH.global.util.MsgResponseDto;
@@ -26,7 +24,7 @@ public class RequestController {
     @PostMapping
     public ResponseEntity<MsgResponseDto> saveRequest(@RequestBody @Valid CreateRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         requestService.saveRequest(request, userDetails.getUser());
-        return ResponseEntity.ok(new MsgResponseDto("요청 보내기 완료", HttpStatus.CREATED.value()));
+        return ResponseEntity.ok(new MsgResponseDto("요청 보내기 완료.", HttpStatus.CREATED.value()));
     }
 
     @PostMapping("/range")
@@ -35,10 +33,16 @@ public class RequestController {
         return ResponseEntity.ok("ok");
     }
 
-    @GetMapping
-    public ResponseEntity<List<RequestsResponse>> findRequests(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<RequestsResponse> requestsResponses = requestService.findRequests(userDetails.getUser());
-
-        return ResponseEntity.ok(requestsResponses);
+    @DeleteMapping("/{requestid}")
+    public ResponseEntity<MsgResponseDto> deleteRequest(@PathVariable Long requestid, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        requestService.deleteRequest(requestid, userDetails.getUser());
+        return ResponseEntity.ok(new MsgResponseDto("요청 삭제 완료.", HttpStatus.OK.value()));
     }
+
+//    @GetMapping
+//    public ResponseEntity<List<RequestsResponse>> findRequests(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        List<RequestsResponse> requestsResponses = requestService.findRequests(userDetails.getUser());
+//
+//        return ResponseEntity.ok(requestsResponses);
+//    }
 }

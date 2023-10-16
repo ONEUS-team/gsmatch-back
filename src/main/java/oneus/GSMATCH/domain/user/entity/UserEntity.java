@@ -61,11 +61,6 @@ public class UserEntity {
     @Column(name = "type")
     private Type type;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     private List<RequestEntity> requestList = new ArrayList<>();
-
-    public void setRequestList(List<RequestEntity> requestList) {
-        this.requestList = requestList;
-    }
-
 }

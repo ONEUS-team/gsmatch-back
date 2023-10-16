@@ -9,4 +9,9 @@ import java.util.Optional;
 
 public interface RequestRepository extends JpaRepository<RequestEntity, Long> {
     Optional<List<RequestEntity>> findByAuthor(UserEntity user);
+
+    boolean existsByRequestId(Long requestId);
+
+    void deleteByRequestId(Long requestId);
+
 }
