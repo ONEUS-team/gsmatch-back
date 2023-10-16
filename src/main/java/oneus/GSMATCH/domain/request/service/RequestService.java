@@ -3,6 +3,8 @@ package oneus.GSMATCH.domain.request.service;
 import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.request.dto.request.ModifyRequest;
 import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
+import oneus.GSMATCH.domain.request.dto.response.Author;
+import oneus.GSMATCH.domain.request.dto.response.InfoResponse;
 import oneus.GSMATCH.domain.request.dto.response.RangeResponse;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
 import oneus.GSMATCH.domain.request.repository.RequestRepository;
@@ -62,6 +64,25 @@ public class RequestService {
         ableSendRequest(userEntity);
         List<Long> recipientsList = findRecipientsId(requestRequest, userEntity.getType(), userEntity.getUsersId());
         return new RangeResponse(recipientsList.size());
+    }
+
+
+    @Transactional
+    public InfoResponse infoRequest(Long requestId) {
+        RequestEntity request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new CustomException(NOT_OK_REQUEST));
+        return InfoResponse.builder()
+                .id(request.getRequestId())
+                .title(request.getTitle())
+                .content(request.getContent())
+                .request_only(request.getRequestOnly())
+                .author(Author.builder()
+                        .name(request.getAuthor().getName())
+                        .grade(request.getAuthor().getGrade())
+                        .type(request.getAuthor().getType())
+                        .level(request.getAuthor().getLevel())
+                        .build())
+                .build();
     }
 
     @Transactional

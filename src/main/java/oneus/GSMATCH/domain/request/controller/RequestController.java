@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.request.dto.request.ModifyRequest;
 import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
+import oneus.GSMATCH.domain.request.dto.response.InfoResponse;
 import oneus.GSMATCH.domain.request.dto.response.RangeResponse;
 import oneus.GSMATCH.domain.request.service.RequestService;
 import oneus.GSMATCH.global.security.UserDetailsImpl;
@@ -31,11 +32,16 @@ public class RequestController {
         return ResponseEntity.ok(requestService.rangeRequest(request, userDetails.getUser()));
     }
 
-    @PutMapping("/{requestid}")
-    public ResponseEntity<MsgResponseDto> modifyRequest(@PathVariable Long requestid,
+    @GetMapping("/{requestId}")
+    public ResponseEntity<InfoResponse> infoRequest(@PathVariable Long requestId) {
+        return ResponseEntity.ok(requestService.infoRequest(requestId));
+    }
+
+    @PutMapping("/{requestId}")
+    public ResponseEntity<MsgResponseDto> modifyRequest(@PathVariable Long requestId,
                                                         @RequestBody ModifyRequest request,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        requestService.modifyRequest(requestid, request, userDetails.getUser());
+        requestService.modifyRequest(requestId, request, userDetails.getUser());
         return ResponseEntity.ok(new MsgResponseDto("요청 수정 완료.", HttpStatus.OK.value()));
     }
 
