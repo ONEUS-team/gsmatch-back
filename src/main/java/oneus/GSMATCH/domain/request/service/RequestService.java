@@ -1,7 +1,7 @@
 package oneus.GSMATCH.domain.request.service;
 
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
+import oneus.GSMATCH.domain.request.dto.request.ModifyRequest;
 import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
 import oneus.GSMATCH.domain.request.dto.response.RangeResponse;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
@@ -9,7 +9,6 @@ import oneus.GSMATCH.domain.request.repository.RequestRepository;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
-import oneus.GSMATCH.global.util.UserStateEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static oneus.GSMATCH.global.exception.ErrorCode.*;
 import static oneus.GSMATCH.global.util.UserStateEnum.*;
@@ -30,9 +28,7 @@ public class RequestService {
 
     @Transactional
     public void saveRequest(RequestRequest createRequest, UserEntity userEntity) {
-
         ableSendRequest(userEntity);
-
         RequestEntity requestEntity = RequestEntity.builder()
                 .title(createRequest.getTitle())
                 .content(createRequest.getContent())
@@ -69,15 +65,29 @@ public class RequestService {
     }
 
     @Transactional
-    public void deleteRequest(Long requestId, UserEntity user) {
+    public void modifyRequest(Long requestId, ModifyRequest request, UserEntity user) {
 
-        // 존재하는 요청인지 검증
-        if (!requestRepository.existsByRequestId(requestId))
+        // 존재하는 요청인지 검증 + 해당 사용자가 보낸 요청인지 검증
+        if (!requestRepository.existsByRequestId(requestId)
+                &&
+                user.getRequestList().stream()
+                        .noneMatch(requestEntity -> Objects.equals(requestEntity.getRequestId(), requestId)))
             throw new CustomException(NOT_OK_REQUEST);
 
-        // 해당 사용자가 보낸 요청인지 검증
-        if (user.getRequestList().stream()
-                .noneMatch(requestEntity -> Objects.equals(requestEntity.getRequestId(), requestId)))
+        RequestEntity requestEntity = requestRepository.findById(requestId)
+                .orElseThrow(() -> new CustomException(NOT_OK_REQUEST));
+        requestEntity.modifyRequest(request.getTitle(), request.getContent());
+
+        requestRepository.save(requestEntity);
+    }
+
+    @Transactional
+    public void deleteRequest(Long requestId, UserEntity user) {
+
+        if (!requestRepository.existsByRequestId(requestId)
+                &&
+                user.getRequestList().stream()
+                        .noneMatch(requestEntity -> Objects.equals(requestEntity.getRequestId(), requestId)))
             throw new CustomException(NOT_OK_REQUEST);
 
         requestRepository.deleteByRequestId(requestId);

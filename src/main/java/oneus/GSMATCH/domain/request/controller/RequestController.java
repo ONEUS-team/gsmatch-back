@@ -2,6 +2,7 @@ package oneus.GSMATCH.domain.request.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import oneus.GSMATCH.domain.request.dto.request.ModifyRequest;
 import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
 import oneus.GSMATCH.domain.request.dto.response.RangeResponse;
 import oneus.GSMATCH.domain.request.service.RequestService;
@@ -28,6 +29,14 @@ public class RequestController {
     @PostMapping("/range")
     public ResponseEntity<RangeResponse> rangeRequest(@RequestBody @Valid RequestRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(requestService.rangeRequest(request, userDetails.getUser()));
+    }
+
+    @PutMapping("/{requestid}")
+    public ResponseEntity<MsgResponseDto> modifyRequest(@PathVariable Long requestid,
+                                                        @RequestBody ModifyRequest request,
+                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        requestService.modifyRequest(requestid, request, userDetails.getUser());
+        return ResponseEntity.ok(new MsgResponseDto("요청 수정 완료.", HttpStatus.OK.value()));
     }
 
     @DeleteMapping("/{requestid}")

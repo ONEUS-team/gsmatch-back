@@ -60,5 +60,11 @@
         public void setRecipientsId(List<Long> recipientsId) {
             this.recipientsId = recipientsId;
         }
+
+        @Builder
+        public void modifyRequest(String title, String content) {
+            this.title = title;
+            this.content = content;
+        }
     }
 
