@@ -146,8 +146,19 @@ public class RequestService {
                         .map(UserEntity::getUsersId).toList();
             }
         } else if (request.getRequest_type().equals(RequestType.STUDY)) {
-            userIdList = userRepository.findByMajorInAndUsersIdNot(request.getRequest_major(), userId).stream()
-                    .map(UserEntity::getUsersId).toList();
+            if (request.getRequest_grade().equals(Grade.ALL)) {
+                userIdList = userRepository.findByMajorInAndUsersIdNot(request.getRequest_major(), userId).stream()
+                        .map(UserEntity::getUsersId).toList();
+            } else if  (request.getRequest_grade().equals(Grade.ONE)) {
+                userIdList = userRepository.findByGradeAndMajorInAndUsersIdNot(Grade.ONE, request.getRequest_major(), userId).stream()
+                        .map(UserEntity::getUsersId).toList();
+            } else if  (request.getRequest_grade().equals(Grade.TWO)) {
+                userIdList = userRepository.findByGradeAndMajorInAndUsersIdNot(Grade.TWO, request.getRequest_major(), userId).stream()
+                        .map(UserEntity::getUsersId).toList();
+            } else if  (request.getRequest_grade().equals(Grade.THREE)) {
+                userIdList = userRepository.findByGradeAndMajorInAndUsersIdNot(Grade.THREE, request.getRequest_major(), userId).stream()
+                        .map(UserEntity::getUsersId).toList();
+            }
         } else {
             throw new CustomException(NOT_OK_REQUEST);
         }
