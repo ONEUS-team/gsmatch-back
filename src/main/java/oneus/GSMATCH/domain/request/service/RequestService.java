@@ -28,10 +28,11 @@ public class RequestService {
 
     @Transactional
     public void saveRequest(RequestRequest createRequest, UserEntity userEntity) {
-
         ableSendRequest(userEntity);
+        List<Long> recipientsList = findRecipientsId(createRequest, userEntity.getType(), userEntity.getUsersId());
 
-        // 요청 받을 사람을 구하는 로직
+        if (recipientsList.isEmpty())
+            throw new CustomException(DONT_SEND_REQUEST);
 
         RequestEntity requestEntity = RequestEntity.builder()
                 .title(createRequest.getTitle())
@@ -41,8 +42,8 @@ public class RequestService {
                 .requestGender(createRequest.getRequest_gender())
                 .requestMajor(createRequest.getRequest_major())
                 .author(userEntity)
+                .recipientsId(recipientsList)
                 .build();
-
 
         requestRepository.save(requestEntity);
     }
