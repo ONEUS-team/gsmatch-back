@@ -133,7 +133,7 @@ public class RequestService {
 
         if (request.getRequest_type().equals(RequestType.TYPE)) {
             if (request.getRequest_grade().equals(Grade.ALL)) {
-                userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(Grade.ALL, userType, userId).stream()
+                userIdList = userRepository.findByTypeAndUsersIdNot(userType, userId).stream()
                         .map(UserEntity::getUsersId).toList();
             } else if  (request.getRequest_grade().equals(Grade.ONE)) {
                 userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(Grade.ONE, userType, userId).stream()

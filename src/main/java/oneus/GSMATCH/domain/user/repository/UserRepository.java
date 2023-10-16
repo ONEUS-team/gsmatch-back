@@ -12,6 +12,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByName(String name);
     boolean existsByName(String name);
 
+
+    List<UserEntity> findByTypeAndUsersIdNot(Type type, Long userId);
+
     List<UserEntity> findByGradeAndTypeAndUsersIdNot(Grade grade, Type type, Long userId);
     List<UserEntity> findByMajorInAndUsersIdNot(List<Major> majors, Long userId);
 }
