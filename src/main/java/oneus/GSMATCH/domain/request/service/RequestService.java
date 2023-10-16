@@ -18,21 +18,6 @@ import static oneus.GSMATCH.global.exception.ErrorCode.*;
 @RequiredArgsConstructor
 public class RequestService {
     private final RequestRepository requestRepository;
-    private final UserRepository userRepository;
-
-
-//    public List<RequestsResponse> findRequests(UserEntity user) {
-//        return requestRepository.findByAuthor(user)
-//                .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION))
-//                .stream()
-//                .map(item -> RequestsResponse.builder()
-//                        .title(item.getTitle())
-//                        .content(item.getContent())
-//                        .request_type(item.getRequestType())
-//                        .author_name(item.getAuthor().getName())
-//                        .build())
-//                .collect(Collectors.toList());
-//    }
 
     @Transactional
     public void saveRequest(CreateRequest createRequest, UserEntity userEntity) {
@@ -53,10 +38,6 @@ public class RequestService {
 
 
         requestRepository.save(requestEntity);
-
-//        UserEntity newUser = userRepository.findById(userEntity.getUsersId()).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
-//        newUser.setRequestList(requestRepository.findByAuthorId(newUser).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION)));
-//        userRepository.save(newUser);
     }
 
     @Transactional

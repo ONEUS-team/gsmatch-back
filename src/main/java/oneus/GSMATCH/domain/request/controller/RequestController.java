@@ -38,11 +38,4 @@ public class RequestController {
         requestService.deleteRequest(requestid, userDetails.getUser());
         return ResponseEntity.ok(new MsgResponseDto("요청 삭제 완료.", HttpStatus.OK.value()));
     }
-
-//    @GetMapping
-//    public ResponseEntity<List<RequestsResponse>> findRequests(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        List<RequestsResponse> requestsResponses = requestService.findRequests(userDetails.getUser());
-//
-//        return ResponseEntity.ok(requestsResponses);
-//    }
 }
