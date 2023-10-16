@@ -63,4 +63,8 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     private List<RequestEntity> requestList = new ArrayList<>();
+
+    public void modifyType(Type type) {
+        this.type = type;
+    }
 }

@@ -15,9 +15,11 @@ import static oneus.GSMATCH.global.exception.ErrorCode.*;
 
 import oneus.GSMATCH.global.jwt.JwtUtil;
 import oneus.GSMATCH.global.util.UserRoleEnum;
+import static oneus.GSMATCH.global.util.UserStateEnum.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Collections;
@@ -105,6 +107,7 @@ public class UserService {
     }
 
     // 유저 정보 반환
+    @Transactional
     public UserInfoResponse findUserInfo(UserEntity user) {
         UserEntity toDtoUser = userRepository.findById(user.getUsersId()).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
 
@@ -126,5 +129,15 @@ public class UserService {
                                 .author_name(request.getAuthor().getName())
                                 .build()).collect(Collectors.toList()))
                 .build();
+    }
+
+    // 유저 타입 수정
+    @Transactional
+    public void modifyUserType(Type type, UserEntity user) {
+        UserEntity userEntity = userRepository.findById(user.getUsersId())
+                .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
+        userEntity.modifyType(type);
+
+        userRepository.save(userEntity);
     }
 }
