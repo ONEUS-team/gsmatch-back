@@ -33,4 +33,6 @@ public class RequestRequest {
 
     @Enumerated(EnumType.STRING)
     private List<Major> request_major;
+
+    private Boolean is_onlyone;
 }

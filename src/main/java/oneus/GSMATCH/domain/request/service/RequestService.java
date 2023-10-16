@@ -1,5 +1,6 @@
 package oneus.GSMATCH.domain.request.service;
 
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
 import oneus.GSMATCH.domain.request.dto.response.RangeResponse;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static oneus.GSMATCH.global.exception.ErrorCode.*;
@@ -28,11 +30,8 @@ public class RequestService {
 
     @Transactional
     public void saveRequest(RequestRequest createRequest, UserEntity userEntity) {
-        ableSendRequest(userEntity);
-        List<Long> recipientsList = findRecipientsId(createRequest, userEntity.getType(), userEntity.getUsersId());
 
-        if (recipientsList.isEmpty())
-            throw new CustomException(DONT_SEND_REQUEST);
+        ableSendRequest(userEntity);
 
         RequestEntity requestEntity = RequestEntity.builder()
                 .title(createRequest.getTitle())
@@ -42,10 +41,24 @@ public class RequestService {
                 .requestGender(createRequest.getRequest_gender())
                 .requestMajor(createRequest.getRequest_major())
                 .author(userEntity)
-                .recipientsId(recipientsList)
                 .build();
 
-        requestRepository.save(requestEntity);
+        List<Long> recipientsList = findRecipientsId(createRequest, userEntity.getType(), userEntity.getUsersId());
+
+        // 특수요청
+        if (createRequest.getIs_onlyone() != null && createRequest.getIs_onlyone()) {
+            Long recipient = isOnlyOne(createRequest, userEntity.getType(), userEntity.getUsersId());
+            requestEntity.setRecipientsId(List.of(recipient));
+            requestRepository.save(requestEntity);
+        }
+        // 일반요청
+        else {
+            if (recipientsList.isEmpty())
+                throw new CustomException(DONT_SEND_REQUEST);
+
+            requestEntity.setRecipientsId(recipientsList);
+            requestRepository.save(requestEntity);
+        }
     }
 
     @Transactional
@@ -107,5 +120,18 @@ public class RequestService {
         }
 
         return userIdList;
+    }
+
+    private Long isOnlyOne(RequestRequest request, Type userType, Long userId) {
+        List<Long> userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(request.getRequest_grade(), userType, userId)
+                .stream()
+                .map(UserEntity::getUsersId)
+                .toList();
+
+        if (userIdList.isEmpty())
+            throw new CustomException(DONT_SEND_REQUEST);
+
+        Random random = new Random();
+        return userIdList.get(random.nextInt(userIdList.size()));
     }
 }
