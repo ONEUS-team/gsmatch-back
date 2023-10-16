@@ -65,5 +65,9 @@
             this.title = title;
             this.content = content;
         }
+
+        public void setRequestOnly(boolean requestOnly) {
+            this.requestOnly = requestOnly;
+        }
     }
 

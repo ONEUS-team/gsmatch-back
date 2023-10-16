@@ -47,6 +47,7 @@ public class RequestService {
         if (createRequest.getIs_onlyone() != null && createRequest.getIs_onlyone()) {
             Long recipient = isOnlyOne(createRequest, userEntity.getType(), userEntity.getUsersId());
             requestEntity.setRecipientsId(List.of(recipient));
+            requestEntity.setRequestOnly(true);
             requestRepository.save(requestEntity);
         }
         // 일반요청
@@ -55,6 +56,7 @@ public class RequestService {
                 throw new CustomException(DONT_SEND_REQUEST);
 
             requestEntity.setRecipientsId(recipientsList);
+            requestEntity.setRequestOnly(false);
             requestRepository.save(requestEntity);
         }
     }
