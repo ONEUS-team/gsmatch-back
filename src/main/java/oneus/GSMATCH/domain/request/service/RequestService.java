@@ -129,34 +129,28 @@ public class RequestService {
     // 요청을 받는 사용자 특정
     private List<Long> findRecipientsId(RequestRequest request, Type userType, Long userId) {
 
-        List<Long> userIdList = new ArrayList<>();
+        List<Long> userIdList;
 
         if (request.getRequest_type().equals(RequestType.TYPE)) {
             if (request.getRequest_grade().equals(Grade.ALL)) {
                 userIdList = userRepository.findByTypeAndUsersIdNot(userType, userId).stream()
                         .map(UserEntity::getUsersId).toList();
-            } else if  (request.getRequest_grade().equals(Grade.ONE)) {
-                userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(Grade.ONE, userType, userId).stream()
-                        .map(UserEntity::getUsersId).toList();
-            } else if  (request.getRequest_grade().equals(Grade.TWO)) {
-                userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(Grade.TWO, userType, userId).stream()
-                        .map(UserEntity::getUsersId).toList();
-            } else if  (request.getRequest_grade().equals(Grade.THREE)) {
-                userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(Grade.THREE, userType, userId).stream()
-                        .map(UserEntity::getUsersId).toList();
+            }
+            else {
+                if (request.getRequest_gender().equals(Gender.ALL)) {
+                    userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(request.getRequest_grade(), userType, userId).stream()
+                            .map(UserEntity::getUsersId).toList();
+                } else {
+                    userIdList = userRepository.findByGradeAndTypeAndGenderAndUsersIdNot(request.getRequest_grade(), userType, request.getRequest_gender(), userId).stream()
+                            .map(UserEntity::getUsersId).toList();
+                }
             }
         } else if (request.getRequest_type().equals(RequestType.STUDY)) {
             if (request.getRequest_grade().equals(Grade.ALL)) {
                 userIdList = userRepository.findByMajorInAndUsersIdNot(request.getRequest_major(), userId).stream()
                         .map(UserEntity::getUsersId).toList();
-            } else if  (request.getRequest_grade().equals(Grade.ONE)) {
-                userIdList = userRepository.findByGradeAndMajorInAndUsersIdNot(Grade.ONE, request.getRequest_major(), userId).stream()
-                        .map(UserEntity::getUsersId).toList();
-            } else if  (request.getRequest_grade().equals(Grade.TWO)) {
-                userIdList = userRepository.findByGradeAndMajorInAndUsersIdNot(Grade.TWO, request.getRequest_major(), userId).stream()
-                        .map(UserEntity::getUsersId).toList();
-            } else if  (request.getRequest_grade().equals(Grade.THREE)) {
-                userIdList = userRepository.findByGradeAndMajorInAndUsersIdNot(Grade.THREE, request.getRequest_major(), userId).stream()
+            } else {
+                userIdList = userRepository.findByGradeAndMajorInAndUsersIdNot(request.getRequest_grade(), request.getRequest_major(), userId).stream()
                         .map(UserEntity::getUsersId).toList();
             }
         } else {

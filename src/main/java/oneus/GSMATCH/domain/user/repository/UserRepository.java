@@ -19,5 +19,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findByMajorInAndUsersIdNot(List<Major> majors, Long userId);
 
     List<UserEntity> findByGradeAndTypeAndUsersIdNot(Grade grade, Type type, Long userId);
+
+
+    List<UserEntity> findByGradeAndTypeAndGenderAndUsersIdNot(Grade grade, Type type, Gender gender, Long userId);
+
+
     List<UserEntity> findByGradeAndMajorInAndUsersIdNot(Grade grade, List<Major> majors, Long userId);
 }
