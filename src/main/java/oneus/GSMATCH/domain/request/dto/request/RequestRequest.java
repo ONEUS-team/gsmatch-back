@@ -26,7 +26,7 @@ public class RequestRequest {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Grade request_grade;
+    private List<Grade> request_grade;
 
     @Enumerated(EnumType.STRING)
     private Gender request_gender;

@@ -29,9 +29,9 @@
         @Column(name = "content")
         private String content;
 
-        @Enumerated(EnumType.STRING)
+        @ElementCollection
         @Column(name = "request_grade")
-        private Grade requestGrade;
+        private List<Grade> requestGrade;
 
         @Column(name = "request_only")
         private Boolean requestOnly;

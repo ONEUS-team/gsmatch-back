@@ -132,25 +132,25 @@ public class RequestService {
         List<Long> userIdList;
 
         if (request.getRequest_type().equals(RequestType.TYPE)) {
-            if (request.getRequest_grade().equals(Grade.ALL)) {
+            if (request.getRequest_grade().get(0).equals(Grade.ALL)) {
                 userIdList = userRepository.findByTypeAndUsersIdNot(userType, userId).stream()
                         .map(UserEntity::getUsersId).toList();
             }
             else {
                 if (request.getRequest_gender().equals(Gender.ALL)) {
-                    userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(request.getRequest_grade(), userType, userId).stream()
+                    userIdList = userRepository.findByGradeInAndTypeAndUsersIdNot(request.getRequest_grade(), userType, userId).stream()
                             .map(UserEntity::getUsersId).toList();
                 } else {
-                    userIdList = userRepository.findByGradeAndTypeAndGenderAndUsersIdNot(request.getRequest_grade(), userType, request.getRequest_gender(), userId).stream()
+                    userIdList = userRepository.findByGradeInAndTypeAndGenderAndUsersIdNot(request.getRequest_grade(), userType, request.getRequest_gender(), userId).stream()
                             .map(UserEntity::getUsersId).toList();
                 }
             }
         } else if (request.getRequest_type().equals(RequestType.STUDY)) {
-            if (request.getRequest_grade().equals(Grade.ALL)) {
+            if (request.getRequest_grade().get(0).equals(Grade.ALL)) {
                 userIdList = userRepository.findByMajorInAndUsersIdNot(request.getRequest_major(), userId).stream()
                         .map(UserEntity::getUsersId).toList();
             } else {
-                userIdList = userRepository.findByGradeAndMajorInAndUsersIdNot(request.getRequest_grade(), request.getRequest_major(), userId).stream()
+                userIdList = userRepository.findByGradeInAndMajorInAndUsersIdNot(request.getRequest_grade(), request.getRequest_major(), userId).stream()
                         .map(UserEntity::getUsersId).toList();
             }
         } else {
@@ -161,10 +161,19 @@ public class RequestService {
     }
 
     private Long isOnlyOne(RequestRequest request, Type userType, Long userId) {
-        List<Long> userIdList = userRepository.findByGradeAndTypeAndUsersIdNot(request.getRequest_grade(), userType, userId)
-                .stream()
-                .map(UserEntity::getUsersId)
-                .toList();
+        List<Long> userIdList;
+
+        if (request.getRequest_grade().get(0).equals(Grade.ALL)) {
+            userIdList = userRepository.findByTypeAndUsersIdNot(userType, userId)
+                    .stream()
+                    .map(UserEntity::getUsersId)
+                    .toList();
+        } else {
+            userIdList = userRepository.findByGradeInAndTypeAndUsersIdNot(request.getRequest_grade(), userType, userId)
+                    .stream()
+                    .map(UserEntity::getUsersId)
+                    .toList();
+        }
 
         if (userIdList.isEmpty())
             throw new CustomException(DONT_SEND_REQUEST);
