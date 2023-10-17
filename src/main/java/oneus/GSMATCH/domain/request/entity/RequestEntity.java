@@ -55,7 +55,7 @@
 
         @Enumerated(EnumType.STRING)
         @Column(name = "request_gender")
-        private Gender requestGender;
+        private List<Gender> requestGender;
 
         public void setRecipientsId(List<Long> recipientsId) {
             this.recipientsId = recipientsId;

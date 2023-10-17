@@ -29,7 +29,7 @@ public class RequestRequest {
     private List<Grade> request_grade;
 
     @Enumerated(EnumType.STRING)
-    private Gender request_gender;
+    private List<Gender> request_gender;
 
     @Enumerated(EnumType.STRING)
     private List<Major> request_major;
