@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import oneus.GSMATCH.domain.request.entity.RequestEntity;
+import oneus.GSMATCH.domain.user.entity.UserEntity;
 
 import java.util.List;
 
@@ -22,17 +24,29 @@ public class RequestRequest {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private RequestType request_type;
+    private RequestType requestType;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private List<Grade> request_grade;
+    private List<Grade> requestGrade;
 
     @Enumerated(EnumType.STRING)
-    private List<Gender> request_gender;
+    private List<Gender> requestGender;
 
     @Enumerated(EnumType.STRING)
-    private List<Major> request_major;
+    private List<Major> requestMajor;
 
-    private Boolean is_onlyone;
+    private Boolean isOnlyone;
+
+    public RequestEntity toEntity(UserEntity author) {
+        return RequestEntity.builder()
+                .title(title)
+                .content(content)
+                .requestType(requestType)
+                .requestGrade(requestGrade)
+                .requestGender(requestGender)
+                .requestMajor(requestMajor)
+                .author(author)
+                .build();
+    }
 }

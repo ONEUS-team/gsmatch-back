@@ -30,20 +30,12 @@ public class RequestService {
     @Transactional
     public void saveRequest(RequestRequest createRequest, UserEntity userEntity) {
         ableSendRequest(userEntity);
-        RequestEntity requestEntity = RequestEntity.builder()
-                .title(createRequest.getTitle())
-                .content(createRequest.getContent())
-                .requestType(createRequest.getRequest_type())
-                .requestGrade(createRequest.getRequest_grade())
-                .requestGender(createRequest.getRequest_gender())
-                .requestMajor(createRequest.getRequest_major())
-                .author(userEntity)
-                .build();
+        RequestEntity requestEntity = createRequest.toEntity(userEntity);
 
         List<Long> recipientsList = findRecipientsId(createRequest, userEntity.getType(), userEntity.getUsersId());
 
         // 특수요청
-        if (createRequest.getIs_onlyone() != null && createRequest.getIs_onlyone()) {
+        if (createRequest.getIsOnlyone() != null && createRequest.getIsOnlyone()) {
             Long recipient = isOnlyOne(createRequest, userEntity.getType(), userEntity.getUsersId());
             requestEntity.setRecipientsId(List.of(recipient));
             requestEntity.setRequestOnly(true);
@@ -128,11 +120,11 @@ public class RequestService {
 
         List<Long> userIdList;
 
-        if (request.getRequest_type().equals(RequestType.TYPE)) {
-            userIdList = userRepository.findByGradeInAndTypeAndGenderInAndUsersIdNot(request.getRequest_grade(), userType, request.getRequest_gender(), userId).stream()
+        if (request.getRequestType().equals(RequestType.TYPE)) {
+            userIdList = userRepository.findByGradeInAndTypeAndGenderInAndUsersIdNot(request.getRequestGrade(), userType, request.getRequestGender(), userId).stream()
                     .map(UserEntity::getUsersId).toList();
-        } else if (request.getRequest_type().equals(RequestType.STUDY)) {
-            userIdList = userRepository.findByGradeInAndMajorInAndUsersIdNot(request.getRequest_grade(), request.getRequest_major(), userId).stream()
+        } else if (request.getRequestType().equals(RequestType.STUDY)) {
+            userIdList = userRepository.findByGradeInAndMajorInAndUsersIdNot(request.getRequestGrade(), request.getRequestMajor(), userId).stream()
                     .map(UserEntity::getUsersId).toList();
         } else {
             throw new CustomException(NOT_OK_REQUEST);
@@ -142,7 +134,7 @@ public class RequestService {
     }
 
     private Long isOnlyOne(RequestRequest request, Type userType, Long userId) {
-        List<Long> userIdList = userRepository.findByGradeInAndTypeAndUsersIdNot(request.getRequest_grade(), userType, userId)
+        List<Long> userIdList = userRepository.findByGradeInAndTypeAndUsersIdNot(request.getRequestGrade(), userType, userId)
                     .stream()
                     .map(UserEntity::getUsersId)
                     .toList();
