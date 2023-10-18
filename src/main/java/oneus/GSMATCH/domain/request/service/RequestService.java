@@ -118,9 +118,7 @@ public class RequestService {
 
     // 요청이 3개 이상인지 검증
     private void ableSendRequest(UserEntity user) {
-        if (requestRepository.findByAuthor(user)
-                .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION))
-                .size() >= 3) {
+        if (requestRepository.countByAuthor(user) >= 3) {
             throw new CustomException(MANY_REQUEST);
         }
     }
