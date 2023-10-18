@@ -60,7 +60,7 @@ public class RequestService {
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional
     public InfoResponse infoRequest(Long requestId) {
         RequestEntity request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new CustomException(NOT_OK_REQUEST));
@@ -80,12 +80,7 @@ public class RequestService {
 
     @Transactional
     public void modifyRequest(Long requestId, ModifyRequest request, UserEntity user) {
-
-        boolean isNotUserSendRequest = user.getRequestList().stream()
-                .noneMatch(requestEntity -> Objects.equals(requestEntity.getRequestId(), requestId));
-
-        // 존재하는 요청인지 검증 + 해당 사용자가 보낸 요청인지 검증
-        if (!requestRepository.existsByRequestId(requestId) && isNotUserSendRequest)
+        if (isNotAccessRequest(user, requestId))
             throw new CustomException(NOT_OK_REQUEST);
 
         RequestEntity requestEntity = requestRepository.findById(requestId)
@@ -97,11 +92,7 @@ public class RequestService {
 
     @Transactional
     public void deleteRequest(Long requestId, UserEntity user) {
-
-        boolean isNotUserSendRequest = user.getRequestList().stream()
-                .noneMatch(requestEntity -> Objects.equals(requestEntity.getRequestId(), requestId));
-
-        if (!requestRepository.existsByRequestId(requestId) && isNotUserSendRequest)
+        if (isNotAccessRequest(user, requestId))
             throw new CustomException(NOT_OK_REQUEST);
 
         requestRepository.deleteByRequestId(requestId);
@@ -133,11 +124,12 @@ public class RequestService {
         return userIdList;
     }
 
+    // 조건에 부합하는 단 한명의 유저 아이디 반환
     private Long isOnlyOne(RequestRequest request, Type userType, Long userId) {
         List<Long> userIdList = userRepository.findByGradeInAndTypeAndUsersIdNot(request.getRequestGrades(), userType, userId)
-                    .stream()
-                    .map(UserEntity::getUsersId)
-                    .toList();
+                .stream()
+                .map(UserEntity::getUsersId)
+                .toList();
 
         if (userIdList.isEmpty())
             throw new CustomException(DONT_SEND_REQUEST);
@@ -145,4 +137,13 @@ public class RequestService {
         Random random = new Random();
         return userIdList.get(random.nextInt(userIdList.size()));
     }
+
+    // 존재하지 않는 요청인지 검증 + 해당 사용자가 보내지 않은 요청인지 검증
+    private boolean isNotAccessRequest(UserEntity user, Long requestId) {
+        boolean isNotUserSendRequest = user.getRequestList().stream()
+                .noneMatch(requestEntity -> Objects.equals(requestEntity.getRequestId(), requestId));
+
+        return !requestRepository.existsByRequestId(requestId) || isNotUserSendRequest;
+    }
 }
+
