@@ -52,7 +52,7 @@ public class RequestService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public RangeResponse rangeRequest(RequestRequest requestRequest, UserEntity userEntity) {
         ableSendRequest(userEntity);
         List<Long> recipientsList = findRecipientsId(requestRequest, userEntity.getType(), userEntity.getUsersId());
@@ -60,7 +60,7 @@ public class RequestService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     public InfoResponse infoRequest(Long requestId) {
         RequestEntity request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new CustomException(NOT_OK_REQUEST));
@@ -81,11 +81,11 @@ public class RequestService {
     @Transactional
     public void modifyRequest(Long requestId, ModifyRequest request, UserEntity user) {
 
+        boolean isNotUserSendRequest = user.getRequestList().stream()
+                .noneMatch(requestEntity -> Objects.equals(requestEntity.getRequestId(), requestId));
+
         // 존재하는 요청인지 검증 + 해당 사용자가 보낸 요청인지 검증
-        if (!requestRepository.existsByRequestId(requestId)
-                &&
-                user.getRequestList().stream()
-                        .noneMatch(requestEntity -> Objects.equals(requestEntity.getRequestId(), requestId)))
+        if (!requestRepository.existsByRequestId(requestId) && isNotUserSendRequest)
             throw new CustomException(NOT_OK_REQUEST);
 
         RequestEntity requestEntity = requestRepository.findById(requestId)
@@ -98,10 +98,10 @@ public class RequestService {
     @Transactional
     public void deleteRequest(Long requestId, UserEntity user) {
 
-        if (!requestRepository.existsByRequestId(requestId)
-                &&
-                user.getRequestList().stream()
-                        .noneMatch(requestEntity -> Objects.equals(requestEntity.getRequestId(), requestId)))
+        boolean isNotUserSendRequest = user.getRequestList().stream()
+                .noneMatch(requestEntity -> Objects.equals(requestEntity.getRequestId(), requestId));
+
+        if (!requestRepository.existsByRequestId(requestId) && isNotUserSendRequest)
             throw new CustomException(NOT_OK_REQUEST);
 
         requestRepository.deleteByRequestId(requestId);
