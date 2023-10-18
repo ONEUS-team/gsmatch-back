@@ -12,9 +12,9 @@ import static oneus.GSMATCH.global.util.UserStateEnum.RequestType;
 @AllArgsConstructor
 @Builder
 public class RequestsResponse {
-    private Long request_id;
+    private Long requestId;
     private String title;
     private String content;
-    private RequestType request_type;
-    private String author_name;
+    private RequestType requestType;
+    private String authorName;
 }

@@ -24,5 +24,5 @@ public class UserInfoResponse {
     private Major major;
     private Gender gender;
     private Type type;
-    private List<RequestsResponse> request_list;
+    private List<RequestsResponse> requestList;
 }

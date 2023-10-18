@@ -120,13 +120,13 @@ public class UserService {
                 .point(toDtoUser.getPoint())
                 .major(toDtoUser.getMajor())
                 .type(toDtoUser.getType())
-                .request_list(toDtoUser.getRequestList().stream()
+                .requestList(toDtoUser.getRequestList().stream()
                         .map(request -> RequestsResponse.builder()
-                                .request_id(request.getRequestId())
+                                .requestId(request.getRequestId())
                                 .title(request.getTitle())
                                 .content(request.getContent())
-                                .request_type(request.getRequestType())
-                                .author_name(request.getAuthor().getName())
+                                .requestType(request.getRequestType())
+                                .authorName(request.getAuthor().getName())
                                 .build()).collect(Collectors.toList()))
                 .build();
     }

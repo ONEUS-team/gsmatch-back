@@ -28,13 +28,13 @@ public class RequestRequest {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private List<Grade> requestGrade;
+    private List<Grade> requestGrades;
 
     @Enumerated(EnumType.STRING)
-    private List<Gender> requestGender;
+    private List<Gender> requestGenders;
 
     @Enumerated(EnumType.STRING)
-    private List<Major> requestMajor;
+    private List<Major> requestMajors;
 
     private Boolean isOnlyone;
 
@@ -43,9 +43,9 @@ public class RequestRequest {
                 .title(title)
                 .content(content)
                 .requestType(requestType)
-                .requestGrade(requestGrade)
-                .requestGender(requestGender)
-                .requestMajor(requestMajor)
+                .requestGrade(requestGrades)
+                .requestGender(requestGenders)
+                .requestMajor(requestMajors)
                 .author(author)
                 .build();
     }

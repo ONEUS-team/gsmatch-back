@@ -68,7 +68,7 @@ public class RequestService {
                 .id(request.getRequestId())
                 .title(request.getTitle())
                 .content(request.getContent())
-                .request_only(request.getRequestOnly())
+                .requestOnly(request.getRequestOnly())
                 .author(Author.builder()
                         .name(request.getAuthor().getName())
                         .grade(request.getAuthor().getGrade())
@@ -121,10 +121,10 @@ public class RequestService {
         List<Long> userIdList;
 
         if (request.getRequestType().equals(RequestType.TYPE)) {
-            userIdList = userRepository.findByGradeInAndTypeAndGenderInAndUsersIdNot(request.getRequestGrade(), userType, request.getRequestGender(), userId).stream()
+            userIdList = userRepository.findByGradeInAndTypeAndGenderInAndUsersIdNot(request.getRequestGrades(), userType, request.getRequestGenders(), userId).stream()
                     .map(UserEntity::getUsersId).toList();
         } else if (request.getRequestType().equals(RequestType.STUDY)) {
-            userIdList = userRepository.findByGradeInAndMajorInAndUsersIdNot(request.getRequestGrade(), request.getRequestMajor(), userId).stream()
+            userIdList = userRepository.findByGradeInAndMajorInAndUsersIdNot(request.getRequestGrades(), request.getRequestMajors(), userId).stream()
                     .map(UserEntity::getUsersId).toList();
         } else {
             throw new CustomException(NOT_OK_REQUEST);
@@ -134,7 +134,7 @@ public class RequestService {
     }
 
     private Long isOnlyOne(RequestRequest request, Type userType, Long userId) {
-        List<Long> userIdList = userRepository.findByGradeInAndTypeAndUsersIdNot(request.getRequestGrade(), userType, userId)
+        List<Long> userIdList = userRepository.findByGradeInAndTypeAndUsersIdNot(request.getRequestGrades(), userType, userId)
                     .stream()
                     .map(UserEntity::getUsersId)
                     .toList();

@@ -14,7 +14,7 @@ public class InfoResponse {
     private Long id;
     private String title;
     private String content;
-    private Boolean request_only;
+    private Boolean requestOnly;
     private Author author;
 }
 

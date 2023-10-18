@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import oneus.GSMATCH.global.util.UserStateEnum;
+import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 @Getter
 @NoArgsConstructor
@@ -12,7 +12,7 @@ import oneus.GSMATCH.global.util.UserStateEnum;
 @Builder
 public class Author {
     private String name;
-    private UserStateEnum.Grade grade;
-    private UserStateEnum.Type type;
+    private Grade grade;
+    private Type type;
     private Integer level;
 }
