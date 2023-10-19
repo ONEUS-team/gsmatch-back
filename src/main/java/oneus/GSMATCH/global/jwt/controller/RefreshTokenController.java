@@ -34,14 +34,16 @@ public class RefreshTokenController {
     @GetMapping
     public ResponseEntity<Void> refresh(@RequestHeader("Refresh-Token") String token, HttpServletResponse response) {
         String refreshToken = token.substring(7);
-        refreshTokenService.refresh(refreshToken);
-        Claims userinfo = jwtUtil.getUserInfoFromToken(refreshToken);
 
+        // 리프레쉬 토큰 검증
+        refreshTokenService.refresh(refreshToken);
+        // 유저 정보 빼오기
+        Claims userinfo = jwtUtil.getUserInfoFromToken(refreshToken);
         String username = userinfo.getSubject();
         UserEntity user =  userRepository.findByName(username)
                 .orElseThrow(() -> new CustomException(INVALID_TOKEN));
 
-
+        // 에세스 토큰 재발급
         String accessToken = JwtUtil.createToken(user.getName(), user.getRole());
         response.addHeader(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + accessToken);
 

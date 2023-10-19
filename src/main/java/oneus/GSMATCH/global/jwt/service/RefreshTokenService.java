@@ -34,6 +34,7 @@ public class RefreshTokenService {
         RefreshToken savedToken = refreshTokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
 
+        // 요청으로 온 리프레쉬 토큰 검증 + 디비에 저장되어있는 리프레시 토큰 검증
         if (!jwtUtil.validateToken(savedToken.getRefreshToken()) || !savedToken.getRefreshToken().equals(refreshToken)) {
             refreshTokenRepository.deleteByRefreshToken(refreshToken);
             throw new CustomException(INVALID_TOKEN);
