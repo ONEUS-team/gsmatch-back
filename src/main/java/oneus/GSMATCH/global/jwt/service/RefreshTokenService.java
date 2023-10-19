@@ -2,7 +2,7 @@ package oneus.GSMATCH.global.jwt.service;
 
 import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.global.exception.CustomException;
-import oneus.GSMATCH.global.exception.ErrorCode;
+import static oneus.GSMATCH.global.exception.ErrorCode.*;
 import oneus.GSMATCH.global.jwt.JwtUtil;
 import oneus.GSMATCH.global.jwt.entity.RefreshToken;
 import oneus.GSMATCH.global.jwt.repository.RefreshTokenRepository;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtUtil jwtUtil;
 
     public void saveRefreshToken(String token, Long userId) {
         RefreshToken refreshToken = RefreshToken.builder()
@@ -21,6 +22,14 @@ public class RefreshTokenService {
                 .build();
 
         refreshTokenRepository.save(refreshToken);
+    }
 
+    public void refresh(String refreshToken, Long userId) {
+        RefreshToken savedToken = refreshTokenRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(INVALID_TOKEN));
+
+        if (!jwtUtil.validateToken(savedToken.getRefreshToken()) || !savedToken.getRefreshToken().equals(refreshToken)) {
+            throw new CustomException(INVALID_TOKEN);
+        }
     }
 }
