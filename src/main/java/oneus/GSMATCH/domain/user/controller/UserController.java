@@ -10,6 +10,7 @@ import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.domain.user.service.UserService;
 import oneus.GSMATCH.global.jwt.JwtUtil;
+import oneus.GSMATCH.global.jwt.service.RefreshTokenService;
 import oneus.GSMATCH.global.security.UserDetailsImpl;
 import oneus.GSMATCH.global.util.MsgResponseDto;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class UserController {
     public static final String BEARER_PREFIX = "Bearer ";
 
     private final UserService userService;
+    private final RefreshTokenService refreshTokenService;
 
     // 회원 가입
     @PostMapping("/signup")
@@ -38,8 +40,13 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<MsgResponseDto> login(@RequestBody LoginRequest loginRequestDto, HttpServletResponse response) {
         UserEntity user = userService.login(loginRequestDto);
+
+        String refreshToken = JwtUtil.createRefreshToken();
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, BEARER_PREFIX + JwtUtil.createToken(user.getName(), user.getRole()));
-        response.addHeader("Refresh-Token", BEARER_PREFIX + JwtUtil.createRefreshToken());
+        response.addHeader("Refresh-Token", BEARER_PREFIX + refreshToken);
+
+        refreshTokenService.saveRefreshToken(refreshToken, user.getUsersId());
+
         return ResponseEntity.ok(new MsgResponseDto("로그인 완료", HttpStatus.OK.value()));
     }
 
