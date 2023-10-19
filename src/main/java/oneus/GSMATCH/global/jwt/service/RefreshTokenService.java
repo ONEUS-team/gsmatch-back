@@ -7,6 +7,7 @@ import oneus.GSMATCH.global.jwt.JwtUtil;
 import oneus.GSMATCH.global.jwt.entity.RefreshToken;
 import oneus.GSMATCH.global.jwt.repository.RefreshTokenRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +16,12 @@ public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtil jwtUtil;
 
+    @Transactional
     public void saveRefreshToken(String token, Long userId) {
+
+        if (refreshTokenRepository.existsByUserId(userId))
+                refreshTokenRepository.deleteByUserId(userId);
+
         RefreshToken refreshToken = RefreshToken.builder()
                 .refreshToken(token)
                 .userId(userId)
@@ -24,11 +30,12 @@ public class RefreshTokenService {
         refreshTokenRepository.save(refreshToken);
     }
 
-    public void refresh(String refreshToken, Long userId) {
-        RefreshToken savedToken = refreshTokenRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(INVALID_TOKEN));
+    public void refresh(String refreshToken) {
+        RefreshToken savedToken = refreshTokenRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
 
         if (!jwtUtil.validateToken(savedToken.getRefreshToken()) || !savedToken.getRefreshToken().equals(refreshToken)) {
+            refreshTokenRepository.deleteByRefreshToken(refreshToken);
             throw new CustomException(INVALID_TOKEN);
         }
     }

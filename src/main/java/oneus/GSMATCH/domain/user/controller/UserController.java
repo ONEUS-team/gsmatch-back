@@ -41,7 +41,7 @@ public class UserController {
     public ResponseEntity<MsgResponseDto> login(@RequestBody LoginRequest loginRequestDto, HttpServletResponse response) {
         UserEntity user = userService.login(loginRequestDto);
 
-        String refreshToken = JwtUtil.createRefreshToken();
+        String refreshToken = JwtUtil.createRefreshToken(user.getName());
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, BEARER_PREFIX + JwtUtil.createToken(user.getName(), user.getRole()));
         response.addHeader("Refresh-Token", BEARER_PREFIX + refreshToken);
 

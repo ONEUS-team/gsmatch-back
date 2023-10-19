@@ -51,11 +51,12 @@ public class JwtUtil {
                         .compact();
     }
 
-    public static String createRefreshToken() {
+    public static String createRefreshToken(String username) {
         Date date = new Date();
 
         return Jwts.builder()
                         .setIssuedAt(date)
+                        .setSubject(username)
                         .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))   // 만료 시간 : 현재시간 date.getTime() + 위에서 지정한 토큰 만료시간(60분)
                         .signWith(key, signatureAlgorithm)  // 암호화 알고리즘 (Secret key, 사용할 알고리즘 종류)
                         .compact();
