@@ -1,5 +1,8 @@
 package oneus.GSMATCH.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
@@ -9,6 +12,7 @@ import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 @Entity
 @Getter
@@ -45,10 +49,9 @@ public class UserEntity {
     @Column(name = "point")
     private Integer point;
 
-    @ElementCollection
     @Enumerated(EnumType.STRING)
     @Column(name = "major")
-    private List<Major> major;
+    private Major major;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
@@ -58,7 +61,10 @@ public class UserEntity {
     @Column(name = "type")
     private Type type;
 
-    @OneToMany(mappedBy = "authorId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     private List<RequestEntity> requestList = new ArrayList<>();
 
+    public void modifyType(Type type) {
+        this.type = type;
+    }
 }

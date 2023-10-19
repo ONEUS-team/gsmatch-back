@@ -33,7 +33,7 @@ public class SignupRequest {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private List<Major> major;
+    private Major major;
 
     @NotNull
     @Enumerated(EnumType.STRING)

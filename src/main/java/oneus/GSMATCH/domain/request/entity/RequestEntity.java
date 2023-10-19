@@ -1,64 +1,73 @@
-package oneus.GSMATCH.domain.request.entity;
+    package oneus.GSMATCH.domain.request.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import oneus.GSMATCH.domain.user.entity.UserEntity;
+    import com.fasterxml.jackson.annotation.JsonIgnore;
+    import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+    import com.fasterxml.jackson.annotation.JsonManagedReference;
+    import jakarta.persistence.*;
+    import lombok.*;
+    import oneus.GSMATCH.domain.user.entity.UserEntity;
+    import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
-import java.util.List;
+    import java.util.List;
 
-@Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
-@Table(name = "request")
-public class RequestEntity {
+    @Entity
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
+    @Table(name = "request")
+    public class RequestEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "request_id")
-    private Long requestId;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "request_id")
+        private Long requestId;
 
-    @Column(name = "title")
-    private String title;
+        @Column(name = "title")
+        private String title;
 
-    @Column(name = "content")
-    private String content;
+        @Column(name = "content")
+        private String content;
 
-    @Column(name = "request_grade")
-    private Integer requestGrade;
+        @ElementCollection
+        @Column(name = "request_grade")
+        private List<Grade> requestGrade;
 
-    @Column(name = "request_only")
-    private Boolean requestOnly;
+        @Column(name = "request_only")
+        private Boolean requestOnly;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    private UserEntity authorId;
+        @JoinColumn(name = "author_id")
+        @ManyToOne
+        @JsonIgnoreProperties({"requestList", "password", "email", "role", "point"})
+        private UserEntity author;
 
-    @ElementCollection
-    @Column(name = "recipients_id")
-    private List<Long> recipientsId;
+        @ElementCollection
+        @Column(name = "recipients_id")
+        private List<Long> recipientsId;
 
-    @ElementCollection
-    @Column(name = "request_major")
-    private List<String> requestMajor;
+        @ElementCollection
+        @Column(name = "request_major")
+        private List<Major> requestMajor;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "request_type")
-    private RequestType requestType;
+        @Enumerated(EnumType.STRING)
+        @Column(name = "request_type")
+        private RequestType requestType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "request_gender")
-    private RequestGender requestGender;
+        @Enumerated(EnumType.STRING)
+        @Column(name = "request_gender")
+        private List<Gender> requestGender;
 
-    private enum RequestType {
-        TYPE,
-        STUDY;
+        public void setRecipientsId(List<Long> recipientsId) {
+            this.recipientsId = recipientsId;
+        }
+
+        public void modifyRequest(String title, String content) {
+            this.title = title;
+            this.content = content;
+        }
+
+        public void setRequestOnly(boolean requestOnly) {
+            this.requestOnly = requestOnly;
+        }
     }
-
-    private enum RequestGender {
-        MALE,
-        FEMALE;
-    }
-}
 
