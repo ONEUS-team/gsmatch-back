@@ -17,12 +17,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class UserController {
+
+    public static final String BEARER_PREFIX = "Bearer ";
+
     private final UserService userService;
 
     // 회원 가입
@@ -36,7 +38,8 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<MsgResponseDto> login(@RequestBody LoginRequest loginRequestDto, HttpServletResponse response) {
         UserEntity user = userService.login(loginRequestDto);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, JwtUtil.createToken(user.getName(), user.getRole()));
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, BEARER_PREFIX + JwtUtil.createToken(user.getName(), user.getRole()));
+        response.addHeader("Refresh-Token", BEARER_PREFIX + JwtUtil.createRefreshToken());
         return ResponseEntity.ok(new MsgResponseDto("로그인 완료", HttpStatus.OK.value()));
     }
 
