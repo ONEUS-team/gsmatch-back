@@ -1,7 +1,5 @@
 package oneus.GSMATCH.domain.user.service;
 
-import ch.qos.logback.core.spi.ErrorCodes;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.user.dto.request.LoginRequest;
 import oneus.GSMATCH.domain.user.dto.request.SignOutRequest;
@@ -13,7 +11,6 @@ import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
 import static oneus.GSMATCH.global.exception.ErrorCode.*;
 
-import oneus.GSMATCH.global.jwt.JwtUtil;
 import oneus.GSMATCH.global.util.UserRoleEnum;
 import static oneus.GSMATCH.global.util.UserStateEnum.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Collections;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

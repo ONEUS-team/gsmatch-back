@@ -1,12 +1,9 @@
 package oneus.GSMATCH.domain.user.dto.response;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import oneus.GSMATCH.domain.request.entity.RequestEntity;
-import oneus.GSMATCH.global.util.UserRoleEnum;
 import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 import java.util.List;

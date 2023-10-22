@@ -29,12 +29,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
+        if (req.getRequestURI().equals("/refresh")) {
+            filterChain.doFilter(req, res);
+            return;
+        }
+
         String tokenValue = jwtUtil.getJwtFromHeader(req);
 
         if (StringUtils.hasText(tokenValue)) {
             if (!jwtUtil.validateToken(tokenValue)) {
-                log.error("========= Token Error =========");
-                throw new RuntimeException();
+                throw new CustomException(INVALID_TOKEN);
             }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);

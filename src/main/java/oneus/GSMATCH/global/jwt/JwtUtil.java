@@ -23,6 +23,7 @@ public class JwtUtil {
     public static final String AUTHORIZATION_KEY = "auth";      // 사용자 권한 값의 KEY
     public static final String BEARER_PREFIX = "Bearer ";       // Token 식별자
     private static final long TOKEN_TIME = 60 * 60 * 1000L;        // 토큰 만료시간 : 60분
+    private static final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L;        // 토큰 만료시간 : 60분
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey (application.yml 에 추가해둔 값)
     private String secretKey;       // 그 값을 가져와서 secretKey 변수에 넣는다
@@ -41,12 +42,22 @@ public class JwtUtil {
         Date date = new Date();
 
         // 암호화
-        return BEARER_PREFIX +
-                Jwts.builder()
+        return Jwts.builder()
                         .setSubject(username)               // 사용자 식별자값(ID). 여기에선 username 을 넣음
                         .claim(AUTHORIZATION_KEY, role)     // 사용자 권한 (key, value)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))   // 만료 시간 : 현재시간 date.getTime() + 위에서 지정한 토큰 만료시간(60분)
                         .setIssuedAt(date)                  // 발급일
+                        .signWith(key, signatureAlgorithm)  // 암호화 알고리즘 (Secret key, 사용할 알고리즘 종류)
+                        .compact();
+    }
+
+    public static String createRefreshToken(String username) {
+        Date date = new Date();
+
+        return Jwts.builder()
+                        .setIssuedAt(date)
+                        .setSubject(username)
+                        .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))   // 만료 시간 : 현재시간 date.getTime() + 위에서 지정한 토큰 만료시간(60분)
                         .signWith(key, signatureAlgorithm)  // 암호화 알고리즘 (Secret key, 사용할 알고리즘 종류)
                         .compact();
     }

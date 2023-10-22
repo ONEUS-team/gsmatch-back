@@ -1,8 +1,5 @@
 package oneus.GSMATCH.domain.user.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
@@ -12,7 +9,6 @@ import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 @Entity
 @Getter

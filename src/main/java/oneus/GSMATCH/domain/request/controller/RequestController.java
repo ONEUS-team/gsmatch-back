@@ -38,16 +38,15 @@ public class RequestController {
     }
 
     @PutMapping("/{requestId}")
-    public ResponseEntity<MsgResponseDto> modifyRequest(@PathVariable Long requestId,
-                                                        @RequestBody ModifyRequest request,
+    public ResponseEntity<MsgResponseDto> modifyRequest(@PathVariable Long requestId, @RequestBody ModifyRequest request,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         requestService.modifyRequest(requestId, request, userDetails.getUser());
         return ResponseEntity.ok(new MsgResponseDto("요청 수정 완료.", HttpStatus.OK.value()));
     }
 
-    @DeleteMapping("/{requestid}")
-    public ResponseEntity<MsgResponseDto> deleteRequest(@PathVariable Long requestid, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        requestService.deleteRequest(requestid, userDetails.getUser());
+    @DeleteMapping("/{requestId}")
+    public ResponseEntity<MsgResponseDto> deleteRequest(@PathVariable Long requestId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        requestService.deleteRequest(requestId, userDetails.getUser());
         return ResponseEntity.ok(new MsgResponseDto("요청 삭제 완료.", HttpStatus.OK.value()));
     }
 }
