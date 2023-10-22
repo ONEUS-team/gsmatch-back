@@ -38,8 +38,7 @@ public class RequestController {
     }
 
     @PutMapping("/{requestId}")
-    public ResponseEntity<MsgResponseDto> modifyRequest(@PathVariable Long requestId,
-                                                        @RequestBody ModifyRequest request,
+    public ResponseEntity<MsgResponseDto> modifyRequest(@PathVariable Long requestId, @RequestBody ModifyRequest request,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         requestService.modifyRequest(requestId, request, userDetails.getUser());
         return ResponseEntity.ok(new MsgResponseDto("요청 수정 완료.", HttpStatus.OK.value()));
