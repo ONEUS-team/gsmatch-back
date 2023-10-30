@@ -3,12 +3,11 @@ package oneus.GSMATCH.image.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import oneus.GSMATCH.image.ImageEntity;
+import oneus.GSMATCH.image.entity.ImageEntity;
 
 @Getter
 @NoArgsConstructor
-public class ImageDto {
-
+public class ImageRequestDto {
     private String originImageName;
     private String imageName;
     private String imagePath;
@@ -23,7 +22,7 @@ public class ImageDto {
     }
 
     @Builder
-    public ImageDto (String originImageName, String imageName,String imagePath) {
+    public ImageRequestDto(String originImageName, String imageName, String imagePath) {
         this.originImageName = originImageName;
         this.imageName = imageName;
         this.imagePath = imagePath;

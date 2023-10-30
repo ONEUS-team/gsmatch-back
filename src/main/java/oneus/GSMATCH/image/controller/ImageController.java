@@ -1,50 +1,47 @@
 package oneus.GSMATCH.image.controller;
 
 import lombok.RequiredArgsConstructor;
-import oneus.GSMATCH.image.dto.ImageDto;
+import oneus.GSMATCH.image.dto.ImageRequestDto;
+import oneus.GSMATCH.image.dto.ImageResponseDto;
 import oneus.GSMATCH.image.service.ImageService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
 public class ImageController {
-
     private final ImageService imageService;
 
-    @PostMapping("/image/get")
-    public String imageUpload(@RequestParam(name = "image") MultipartFile image) throws IOException {
+    @PostMapping("/image")
+    public ImageResponseDto imageUpload(@RequestParam(name = "image") MultipartFile image) throws IOException{
 
-        String imagePath = "";
+        String fileUUID = UUID.randomUUID().toString();
 
-        String newFileName = UUID.randomUUID().toString();
-        String path = "images/test/"; // 저장될 폴더 경로
+        if (!image.isEmpty()) {
+            File file = new File(System.getProperty("user.dir") + File.separator + "/src/main/resources/images/");
 
-            if (!image.isEmpty()) {
-                File file = new File(imagePath + path);
-
-
-                file = new File(imagePath + path + "/" + newFileName);
-                image.transferTo(file);
-
-                ImageDto imageDto = ImageDto.builder()
-                        .originImageName(image.getOriginalFilename())
-                        .imagePath(path)
-                        .imageName(newFileName)
-                        .build();
-
-                imageService.saveImage(imageDto);
+            if (!file.exists()) {
+                file.mkdirs();
             }
 
-        return "test/imageV1";
+            String fileName = fileUUID + "_" + image.getOriginalFilename();
+            file = new File(file.getPath() + File.separator + fileName);
+
+            image.transferTo(file);
+
+            ImageRequestDto imageDto = ImageRequestDto.builder()
+                    .originImageName(image.getOriginalFilename())
+                    .imagePath(file.getPath())
+                    .imageName(fileName)
+                    .build();
+            return imageService.saveImage(imageDto);
+        }
+
+        return null;
     }
 }
