@@ -29,9 +29,9 @@ public class ResponseController {
         return responseService.infoRequest(responseId);
     }
 
-    @PostMapping("/likes")
-    public boolean likes(@RequestParam Long requestId, @RequestParam Long userId) {
-        return responseService.toggleLike(requestId, userId);
+    @PostMapping("/{responseId}/likes")
+    public void likes(@PathVariable Long responseId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        responseService.toggleLike(responseId, userDetails.getUser().getUsersId());
     }
 
 }

@@ -13,7 +13,7 @@ public class ResponseInfo {
     private Long id;
     private String authorName;
     private RequestType type;
-    private Boolean like;
+    private Boolean liked;
     private Boolean requestOnly;
     private String title;
 

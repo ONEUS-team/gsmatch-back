@@ -19,7 +19,7 @@ public class ResponseService {
     private final RequestEntityRepository repository;
 
     @Transactional
-    public List<ResponseInfo> getRequest (UserDetailsImpl userDetails){
+    public List<ResponseInfo> getRequest(UserDetailsImpl userDetails) {
         List<RequestEntity> userRequest = repository.findByRecipientsIdContains(userDetails.getUser().getUsersId());
 
         return userRequest.stream()
@@ -27,13 +27,13 @@ public class ResponseService {
                 .collect(Collectors.toList());
     }
 
-    private ResponseInfo mapToRequestInfo (RequestEntity request, Long id) {
+    private ResponseInfo mapToRequestInfo(RequestEntity request, Long id) {
         ResponseInfo responseInfo = new ResponseInfo();
         responseInfo.setTitle(request.getTitle());
         responseInfo.setId(request.getRequestId());
         responseInfo.setAuthorName(request.getAuthor().getName());
         responseInfo.setRequestOnly(request.getRequestOnly());
-        responseInfo.setLike(request.getLikesId().contains(id));
+        responseInfo.setLiked(request.getLikesId().contains(id));
         responseInfo.setType(request.getRequestType());
 
         return responseInfo;
@@ -48,29 +48,31 @@ public class ResponseService {
                 .id(request.getRequestId())
                 .title(request.getTitle())
                 .content(request.getContent())
+                .requestOnly(request.getRequestOnly())
                 .author(Author.builder()
                         .name(request.getAuthor().getName())
                         .grade(request.getAuthor().getGrade())
                         .type(request.getAuthor().getType())
+                        .level(request.getAuthor().getLevel())
                         .build())
                 .build();
 
     }
 
     @Transactional
-    public boolean toggleLike(Long requestId, Long userId) {
+    public void toggleLike(Long requestId, Long userId) {
         RequestEntity request = repository.findById(requestId)
-                .orElseThrow();
+                .orElse(null);
+
+        // 코드가 실행 되었을때 반드시 null이 아닌지 확실하게 넘어가는 코드
+        assert request != null;
 
         List<Long> likesIds = request.getLikesId();
-        synchronized (likesIds) {
-            boolean like = likesIds.contains(userId);
-            if (like) {
-                likesIds.remove(userId);
-            } else {
-                likesIds.add(userId);
-            }
-            return !like;
+        boolean like = likesIds.contains(userId);
+        if (like) {
+            likesIds.remove(userId);
+        } else {
+            likesIds.add(userId);
         }
     }
 }
