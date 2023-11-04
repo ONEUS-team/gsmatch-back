@@ -6,12 +6,10 @@ import oneus.GSMATCH.domain.request.dto.response.InfoResponse;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
 import oneus.GSMATCH.domain.response.dto.ResponseInfo;
 import oneus.GSMATCH.domain.response.repository.RequestEntityRepository;
-import oneus.GSMATCH.domain.user.entity.UserEntity;
-import oneus.GSMATCH.global.util.UserStateEnum.*;
+import oneus.GSMATCH.global.security.UserDetailsImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,35 +19,22 @@ public class ResponseService {
     private final RequestEntityRepository repository;
 
     @Transactional
-    public List<ResponseInfo> getMatchingRequests(UserEntity user, RequestType requestType) {
-        List<RequestEntity> allRequests = repository.findAll();
+    public List<ResponseInfo> getRequest (UserDetailsImpl userDetails){
+        List<RequestEntity> userRequest = repository.findByRecipientsIdContains(userDetails.getUser().getUsersId());
 
-        List<ResponseInfo> info = new ArrayList<>();
-        if (requestType == RequestType.TYPE) {
-            info = allRequests.stream()
-                    .filter(request -> request.getAuthor().getType().equals(user.getType()))
-                    .filter(request -> request.getRequestGender().contains(user.getGender()))
-                    .filter(request -> request.getRequestGrade().contains(user.getGrade()))
-                    .map(this :: mapToRequestInfo)
-                    .collect(Collectors.toList());
-        } else if (requestType == RequestType.STUDY) {
-            info = allRequests.stream().filter(request -> request.getRequestType() == requestType)
-                    .filter(request -> request.getRequestGender().contains(user.getGender()))
-                    .filter(request -> request.getRequestGrade().contains(user.getGrade()))
-                    .filter(request -> request.getRequestMajor().contains(user.getMajor()))
-                    .map(this::mapToRequestInfo)
-                    .collect(Collectors.toList());
-        }
-
-        return info;
+        return userRequest.stream()
+                .map(request -> mapToRequestInfo(request, userDetails.getUser().getUsersId()))
+                .collect(Collectors.toList());
     }
 
-    private ResponseInfo mapToRequestInfo (RequestEntity request) {
+    private ResponseInfo mapToRequestInfo (RequestEntity request, Long id) {
         ResponseInfo responseInfo = new ResponseInfo();
         responseInfo.setTitle(request.getTitle());
         responseInfo.setId(request.getRequestId());
         responseInfo.setAuthorName(request.getAuthor().getName());
         responseInfo.setRequestOnly(request.getRequestOnly());
+        responseInfo.setLike(request.getLikesId().contains(id));
+        responseInfo.setType(request.getRequestType());
 
         return responseInfo;
     }

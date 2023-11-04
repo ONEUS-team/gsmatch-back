@@ -20,15 +20,13 @@ public class ResponseController {
     private final ResponseService responseService;
 
     @GetMapping
-    public List<ResponseInfo> getRequest(@AuthenticationPrincipal UserDetailsImpl userDetails, RequestType requestType) {
-        UserEntity user = userDetails.getUser();
-
-        return responseService.getMatchingRequests(user, requestType);
+    public List<ResponseInfo> getRequest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return responseService.getRequest(userDetails);
     }
 
     @GetMapping("/{responseId}")
-    public InfoResponse infoRequest(@RequestParam Long requestId) {
-        return responseService.infoRequest(requestId);
+    public InfoResponse infoRequest(@PathVariable Long responseId) {
+        return responseService.infoRequest(responseId);
     }
 
     @PostMapping("/likes")
