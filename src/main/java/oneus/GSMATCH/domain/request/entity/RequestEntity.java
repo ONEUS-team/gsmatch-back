@@ -57,6 +57,10 @@
         @Column(name = "request_gender")
         private List<Gender> requestGender;
 
+        @ElementCollection
+        @Column(name = "likes_id")
+        private List<Long> likesId;
+
         public void setRecipientsId(List<Long> recipientsId) {
             this.recipientsId = recipientsId;
         }
@@ -69,5 +73,6 @@
         public void setRequestOnly(boolean requestOnly) {
             this.requestOnly = requestOnly;
         }
+
     }
 
