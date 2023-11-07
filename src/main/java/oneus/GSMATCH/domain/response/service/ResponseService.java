@@ -69,7 +69,6 @@ public class ResponseService {
         RequestEntity request = repository.findById(requestId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_OK_REQUEST));
 
-        // 코드가 실행 되었을때 반드시 null이 아닌지 확실하게 넘어가는 코드
         assert request != null;
 
         List<Long> likesIds = request.getLikesId();
