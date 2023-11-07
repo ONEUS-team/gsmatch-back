@@ -1,4 +1,4 @@
-package oneus.GSMATCH.domain.response.dto;
+package oneus.GSMATCH.domain.response.dto.response;
 
 import lombok.*;
 
@@ -8,13 +8,13 @@ import static oneus.GSMATCH.global.util.UserStateEnum.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Setter
 public class ResponseInfo {
-    private Long id;
+    private Long responseId;
     private String authorName;
-    private RequestType type;
-    private Boolean liked;
+    private RequestType requestType;
+    private Boolean likes;
     private Boolean requestOnly;
     private String title;
+    private String content;
 
 }

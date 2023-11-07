@@ -2,10 +2,12 @@ package oneus.GSMATCH.domain.response.service;
 
 import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.request.dto.response.Author;
-import oneus.GSMATCH.domain.request.dto.response.InfoResponse;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
-import oneus.GSMATCH.domain.response.dto.ResponseInfo;
+import oneus.GSMATCH.domain.response.dto.response.InfoRequest;
+import oneus.GSMATCH.domain.response.dto.response.ResponseInfo;
 import oneus.GSMATCH.domain.response.repository.RequestEntityRepository;
+import oneus.GSMATCH.global.exception.CustomException;
+import oneus.GSMATCH.global.exception.ErrorCode;
 import oneus.GSMATCH.global.security.UserDetailsImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,41 +30,44 @@ public class ResponseService {
     }
 
     private ResponseInfo mapToRequestInfo(RequestEntity request, Long id) {
-        ResponseInfo responseInfo = new ResponseInfo();
-        responseInfo.setTitle(request.getTitle());
-        responseInfo.setId(request.getRequestId());
-        responseInfo.setAuthorName(request.getAuthor().getName());
-        responseInfo.setRequestOnly(request.getRequestOnly());
-        responseInfo.setLiked(request.getLikesId().contains(id));
-        responseInfo.setType(request.getRequestType());
-
-        return responseInfo;
-    }
-
-    @Transactional
-    public InfoResponse infoRequest(Long requestId) {
-        RequestEntity request = repository.findById(requestId)
-                .orElseThrow();
-
-        return InfoResponse.builder()
-                .id(request.getRequestId())
+        return ResponseInfo.builder()
+                .responseId(request.getRequestId())
                 .title(request.getTitle())
                 .content(request.getContent())
                 .requestOnly(request.getRequestOnly())
-                .author(Author.builder()
-                        .name(request.getAuthor().getName())
-                        .grade(request.getAuthor().getGrade())
-                        .type(request.getAuthor().getType())
-                        .level(request.getAuthor().getLevel())
-                        .build())
+                .authorName(request.getAuthor().getName())
+                .requestType(request.getRequestType())
+                .likes(request.getLikesId().contains(id))
                 .build();
+    }
 
+    @Transactional
+    public InfoRequest infoRequest(Long requestId, UserDetailsImpl userDetails) {
+        RequestEntity request = repository.findById(requestId)
+                .orElseThrow(() ->  new CustomException(ErrorCode.NOT_OK_REQUEST));
+
+        if (request.getRecipientsId().contains(userDetails.getUser().getUsersId())) {
+            return InfoRequest.builder()
+                    .id(request.getRequestId())
+                    .title(request.getTitle())
+                    .content(request.getContent())
+                    .requestOnly(request.getRequestOnly())
+                    .author(Author.builder()
+                            .name(request.getAuthor().getName())
+                            .grade(request.getAuthor().getGrade())
+                            .type(request.getAuthor().getType())
+                            .level(request.getAuthor().getLevel())
+                            .build())
+                    .likes(request.getLikesId().contains(userDetails.getUser().getUsersId()))
+                    .requestType(request.getRequestType()).build();
+        }
+        return null;
     }
 
     @Transactional
     public void toggleLike(Long requestId, Long userId) {
         RequestEntity request = repository.findById(requestId)
-                .orElse(null);
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_OK_REQUEST));
 
         // 코드가 실행 되었을때 반드시 null이 아닌지 확실하게 넘어가는 코드
         assert request != null;
