@@ -33,7 +33,7 @@ public class ResponseController {
     @PostMapping("/likes")
     public MsgResponseDto likes(@RequestBody Long responseId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         responseService.toggleLike(responseId, userDetails.getUser().getUsersId());
-        return new MsgResponseDto("좋아요 누르기 성공", HttpStatus.OK.value());
+        return new MsgResponseDto("좋아요 누르기 성공.", HttpStatus.OK.value());
     }
 
 }
