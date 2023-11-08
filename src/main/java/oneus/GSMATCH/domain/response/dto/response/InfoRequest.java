@@ -9,7 +9,7 @@ import oneus.GSMATCH.global.util.UserStateEnum.*;
 @NoArgsConstructor
 @Builder
 public class InfoRequest {
-    private Long id;
+    private Long responseId;
     private String title;
     private String content;
     private Boolean requestOnly;

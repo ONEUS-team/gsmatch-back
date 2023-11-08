@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.request.dto.response.Author;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
 import oneus.GSMATCH.domain.response.dto.response.InfoRequest;
+import oneus.GSMATCH.domain.response.dto.response.ResponseId;
 import oneus.GSMATCH.domain.response.dto.response.ResponseInfo;
 import oneus.GSMATCH.domain.response.repository.RequestEntityRepository;
 import oneus.GSMATCH.global.exception.CustomException;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class ResponseService {
 
         return userRequest.stream()
                 .map(request -> mapToRequestInfo(request, userDetails.getUser().getUsersId()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private ResponseInfo mapToRequestInfo(RequestEntity request, Long id) {
@@ -48,7 +48,7 @@ public class ResponseService {
 
         if (request.getRecipientsId().contains(userDetails.getUser().getUsersId())) {
             return InfoRequest.builder()
-                    .id(request.getRequestId())
+                    .responseId(request.getRequestId())
                     .title(request.getTitle())
                     .content(request.getContent())
                     .requestOnly(request.getRequestOnly())
@@ -65,8 +65,8 @@ public class ResponseService {
     }
 
     @Transactional
-    public void toggleLike(Long requestId, Long userId) {
-        RequestEntity request = repository.findById(requestId)
+    public void toggleLike(ResponseId requestId, Long userId) {
+        RequestEntity request = repository.findById(requestId.getResponseId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_OK_REQUEST));
 
         assert request != null;

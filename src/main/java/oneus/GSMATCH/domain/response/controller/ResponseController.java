@@ -1,8 +1,9 @@
 package oneus.GSMATCH.domain.response.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import oneus.GSMATCH.domain.request.dto.response.InfoResponse;
 import oneus.GSMATCH.domain.response.dto.response.InfoRequest;
+import oneus.GSMATCH.domain.response.dto.response.ResponseId;
 import oneus.GSMATCH.domain.response.dto.response.ResponseInfo;
 import oneus.GSMATCH.domain.response.service.ResponseService;
 import oneus.GSMATCH.global.security.UserDetailsImpl;
@@ -21,19 +22,19 @@ public class ResponseController {
     private final ResponseService responseService;
 
     @GetMapping
-    public List<ResponseInfo> getRequest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return responseService.getRequest(userDetails);
+    public ResponseEntity<List<ResponseInfo>> getRequest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(responseService.getRequest(userDetails));
     }
 
     @GetMapping("/{responseId}")
-    public InfoRequest infoRequest(@PathVariable Long responseId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return responseService.infoRequest(responseId, userDetails);
+    public ResponseEntity<InfoRequest> infoRequest(@PathVariable Long responseId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(responseService.infoRequest(responseId, userDetails));
     }
 
     @PostMapping("/likes")
-    public MsgResponseDto likes(@RequestBody Long responseId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        responseService.toggleLike(responseId, userDetails.getUser().getUsersId());
-        return new MsgResponseDto("좋아요 누르기 성공", HttpStatus.OK.value());
+    public ResponseEntity<MsgResponseDto> likes(@RequestBody @Valid ResponseId requestId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        responseService.toggleLike(requestId, userDetails.getUser().getUsersId());
+        return ResponseEntity.ok(new MsgResponseDto("좋아요 누르기 성공.", HttpStatus.OK.value()));
     }
 
 }
