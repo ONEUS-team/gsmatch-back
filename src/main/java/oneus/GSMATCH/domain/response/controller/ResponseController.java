@@ -32,15 +32,9 @@ public class ResponseController {
     }
 
     @PostMapping("/likes")
-<<<<<<< HEAD
     public ResponseEntity<MsgResponseDto> likes(@RequestBody @Valid ResponseId requestId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         responseService.toggleLike(requestId, userDetails.getUser().getUsersId());
         return ResponseEntity.ok(new MsgResponseDto("좋아요 누르기 성공.", HttpStatus.OK.value()));
-=======
-    public MsgResponseDto likes(@RequestBody Long responseId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        responseService.toggleLike(responseId, userDetails.getUser().getUsersId());
-        return new MsgResponseDto("좋아요 누르기 성공.", HttpStatus.OK.value());
->>>>>>> 67ca039f8d3716e5f449cd387cd135cd4467d315
     }
 
 }

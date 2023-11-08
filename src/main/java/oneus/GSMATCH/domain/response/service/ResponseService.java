@@ -10,6 +10,9 @@ import oneus.GSMATCH.domain.response.repository.RequestEntityRepository;
 import oneus.GSMATCH.global.exception.CustomException;
 import oneus.GSMATCH.global.exception.ErrorCode;
 import oneus.GSMATCH.global.security.UserDetailsImpl;
+import oneus.GSMATCH.global.util.MsgResponseDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,7 +64,8 @@ public class ResponseService {
                     .likes(request.getLikesId().contains(userDetails.getUser().getUsersId()))
                     .requestType(request.getRequestType()).build();
         }
-        return null;
+        else return null;
+
     }
 
     @Transactional
