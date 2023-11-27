@@ -33,8 +33,7 @@ public class ResponseController {
 
     @PostMapping("/likes")
     public ResponseEntity<MsgResponseDto> likes(@RequestBody @Valid ResponseId requestId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        responseService.toggleLike(requestId, userDetails.getUser().getUsersId());
-        return ResponseEntity.ok(new MsgResponseDto("좋아요 누르기 성공.", HttpStatus.OK.value()));
+        return ResponseEntity.ok(new MsgResponseDto(responseService.toggleLike(requestId, userDetails.getUser().getUsersId()), HttpStatus.OK.value()));
     }
 
 }

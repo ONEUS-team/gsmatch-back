@@ -69,18 +69,18 @@ public class ResponseService {
     }
 
     @Transactional
-    public void toggleLike(ResponseId requestId, Long userId) {
+    public String toggleLike(ResponseId requestId, Long userId) {
         RequestEntity request = repository.findById(requestId.getResponseId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_OK_REQUEST));
-
-        assert request != null;
 
         List<Long> likesIds = request.getLikesId();
         boolean like = likesIds.contains(userId);
         if (like) {
             likesIds.remove(userId);
+            return "좋아요 취소 하기 성공";
         } else {
             likesIds.add(userId);
+            return "좋아요 누르기 성공";
         }
     }
 }
