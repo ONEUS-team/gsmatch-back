@@ -63,4 +63,5 @@ public class UserEntity {
     public void modifyType(Type type) {
         this.type = type;
     }
+
 }
