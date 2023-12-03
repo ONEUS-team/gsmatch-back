@@ -24,35 +24,15 @@ public class ImageController {
     @PostMapping("/image")
     public ImageResponseDto imageUpload(@RequestParam(name = "image") MultipartFile image) throws IOException{
         validateImageExtension(image);
-
-        String fileUUID = UUID.randomUUID().toString();
-
-        if (!image.isEmpty()) {
-            File file = new File(System.getProperty("user.dir") + File.separator + "/src/main/resources/images/");
-
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-
-            String fileName = fileUUID + "_" + image.getOriginalFilename();
-            file = new File(file.getPath() + File.separator + fileName);
-
-            image.transferTo(file);
-
-            ImageRequestDto imageDto = ImageRequestDto.builder()
-                    .originImageName(image.getOriginalFilename())
-                    .imagePath(file.getPath())
-                    .imageName(fileName)
-                    .build();
-            return imageService.saveImage(imageDto);
-        }
-
-        return null;
+        return imageService.saveImage(image);
     }
 
     private void validateImageExtension(MultipartFile image) {
         String imageOriginName = image.getOriginalFilename();
-        if(imageOriginName != null && !imageOriginName.toLowerCase().endsWith(".png") && !imageOriginName.toLowerCase().endsWith(".jpg")){
+        if(imageOriginName != null &&
+                !imageOriginName.toLowerCase().endsWith(".png") &&
+                !imageOriginName.toLowerCase().endsWith(".jpg") &&
+                !imageOriginName.toLowerCase().endsWith(".jpeg")){
             throw new CustomException(ErrorCode.INVALID_IMAGE_EXTENSION);
         }
 
