@@ -14,7 +14,9 @@ public enum ErrorCode {
 
     NOT_MATCH_INFORMATION(HttpStatus.BAD_REQUEST, "사용자를 찾을 수 없습니다."),
 
-    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "토큰이 유효하지 않습니다.");
+    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "토큰이 유효하지 않습니다."),
+
+    INVALID_IMAGE_EXTENSION(HttpStatus.BAD_REQUEST, "잘못된 이미지 확장자 입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
