@@ -1,6 +1,7 @@
 package oneus.GSMATCH.global.util;
 
 public class UserStateEnum {
+
     public enum Grade {
         ONE,
         TWO,
@@ -29,5 +30,10 @@ public class UserStateEnum {
         LUPI,
         POBI,
         EDI;
+    }
+
+    public enum RequestType {
+        TYPE,
+        STUDY;
     }
 }

@@ -45,10 +45,9 @@ public class UserEntity {
     @Column(name = "point")
     private Integer point;
 
-    @ElementCollection
     @Enumerated(EnumType.STRING)
     @Column(name = "major")
-    private List<Major> major;
+    private Major major;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
@@ -58,7 +57,11 @@ public class UserEntity {
     @Column(name = "type")
     private Type type;
 
-    @OneToMany(mappedBy = "authorId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     private List<RequestEntity> requestList = new ArrayList<>();
+
+    public void modifyType(Type type) {
+        this.type = type;
+    }
 
 }

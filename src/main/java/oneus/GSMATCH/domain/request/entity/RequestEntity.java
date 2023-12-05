@@ -1,4 +1,5 @@
-package oneus.GSMATCH.domain.request.entity;
+    package oneus.GSMATCH.domain.request.entity;
+
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,58 +8,84 @@ import oneus.GSMATCH.image.entity.ImageEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.*;
+import oneus.GSMATCH.domain.user.entity.UserEntity;
+import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
-@Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
-@Table(name = "request")
-public class RequestEntity {
+import java.util.List;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "request_id")
-    private Long requestId;
 
-    @Column(name = "title")
-    private String title;
+    @Entity
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
+    @Table(name = "request")
+    public class RequestEntity {
 
-    @Column(name = "content")
-    private String content;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "request_id")
+        private Long requestId;
 
-    @Column(name = "request_grade")
-    private Integer requestGrade;
+        @Column(name = "title")
+        private String title;
 
-    @Column(name = "request_only")
-    private Boolean requestOnly;
+        @Column(name = "content")
+        private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    private UserEntity authorId;
+        @ElementCollection
+        @Column(name = "request_grade")
+        private List<Grade> requestGrade;
 
-    @ElementCollection
-    @Column(name = "recipients_id")
-    private List<Long> recipientsId;
+        @Column(name = "request_only")
+        private Boolean requestOnly;
 
-    @ElementCollection
-    @Column(name = "request_major")
-    private List<String> requestMajor;
+        @JoinColumn(name = "author_id")
+        @ManyToOne
+        @JsonIgnoreProperties({"requestList", "password", "email", "role", "point"})
+        private UserEntity author;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "request_type")
-    private RequestType requestType;
+        @ElementCollection
+        @Column(name = "recipients_id")
+        private List<Long> recipientsId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "request_gender")
-    private RequestGender requestGender;
+        @ElementCollection
+        @Column(name = "request_major")
+        private List<Major> requestMajor;
 
-    private enum RequestType {
-        TYPE,
-        STUDY;
+        @Enumerated(EnumType.STRING)
+        @Column(name = "request_type")
+        private RequestType requestType;
+
+        @Enumerated(EnumType.STRING)
+        @Column(name = "request_gender")
+        private List<Gender> requestGender;
+
+        @ElementCollection
+        @Column(name = "likes_id")
+        private List<Long> likesId;
+
+        public void setRecipientsId(List<Long> recipientsId) {
+            this.recipientsId = recipientsId;
+        }
+
+        public void modifyRequest(String title, String content) {
+            this.title = title;
+            this.content = content;
+        }
+
+        public void setRequestOnly(boolean requestOnly) {
+            this.requestOnly = requestOnly;
+        }
+
     }
 
-    private enum RequestGender {
+     enum RequestGender {
         MALE,
         FEMALE;
     }
@@ -67,5 +94,3 @@ public class RequestEntity {
     @OneToMany(mappedBy = "requestId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageEntity> requestImagesList;
 */
-
-}

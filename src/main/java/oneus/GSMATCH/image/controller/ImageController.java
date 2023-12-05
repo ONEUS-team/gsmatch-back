@@ -35,6 +35,5 @@ public class ImageController {
                 !imageOriginName.toLowerCase().endsWith(".jpeg")){
             throw new CustomException(ErrorCode.INVALID_IMAGE_EXTENSION);
         }
-
     }
 }

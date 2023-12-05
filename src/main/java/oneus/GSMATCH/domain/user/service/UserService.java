@@ -1,24 +1,26 @@
 package oneus.GSMATCH.domain.user.service;
 
-import ch.qos.logback.core.spi.ErrorCodes;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.user.dto.request.LoginRequest;
 import oneus.GSMATCH.domain.user.dto.request.SignOutRequest;
 import oneus.GSMATCH.domain.user.dto.request.SignupRequest;
+import oneus.GSMATCH.domain.user.dto.response.RequestsResponse;
+import oneus.GSMATCH.domain.user.dto.response.UserInfoResponse;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
 import static oneus.GSMATCH.global.exception.ErrorCode.*;
 
-import oneus.GSMATCH.global.jwt.JwtUtil;
 import oneus.GSMATCH.global.util.UserRoleEnum;
+import static oneus.GSMATCH.global.util.UserStateEnum.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -61,6 +63,7 @@ public class UserService {
                 .type(signupRequestDto.getType())
                 .level(1) // default 레벨 1
                 .point(0) // default 포인트 0
+                .requestList(Collections.emptyList())
                 .build();
 
         userRepository.save(user);
@@ -97,5 +100,40 @@ public class UserService {
         }
 
         userRepository.deleteById(user.getUsersId());
+    }
+
+    // 유저 정보 반환
+    @Transactional
+    public UserInfoResponse findUserInfo(UserEntity user) {
+        UserEntity toDtoUser = userRepository.findById(user.getUsersId()).orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
+
+        return UserInfoResponse.builder()
+                .id(toDtoUser.getUsersId())
+                .username(toDtoUser.getName())
+                .gender(toDtoUser.getGender())
+                .grade(toDtoUser.getGrade())
+                .level(toDtoUser.getLevel())
+                .point(toDtoUser.getPoint())
+                .major(toDtoUser.getMajor())
+                .type(toDtoUser.getType())
+                .requestList(toDtoUser.getRequestList().stream()
+                        .map(request -> RequestsResponse.builder()
+                                .requestId(request.getRequestId())
+                                .title(request.getTitle())
+                                .content(request.getContent())
+                                .requestType(request.getRequestType())
+                                .authorName(request.getAuthor().getName())
+                                .build()).collect(Collectors.toList()))
+                .build();
+    }
+
+    // 유저 타입 수정
+    @Transactional
+    public void modifyUserType(Type type, UserEntity user) {
+        UserEntity userEntity = userRepository.findById(user.getUsersId())
+                .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
+        userEntity.modifyType(type);
+
+        userRepository.save(userEntity);
     }
 }

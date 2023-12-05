@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
 import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @NoArgsConstructor
 public class SignupRequest {
@@ -33,7 +30,7 @@ public class SignupRequest {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private List<Major> major;
+    private Major major;
 
     @NotNull
     @Enumerated(EnumType.STRING)
