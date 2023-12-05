@@ -1,19 +1,11 @@
 spring:
   datasource:
-<<<<<<< HEAD
-    url: jdbc:h2:~/test
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-=======
     url: jdbc:postgresql://ep-silent-wind-51875573.ap-southeast-1.aws.neon.tech/gsmatchdb
     username: vvwv309
     password: pyJTG27LOYxB
->>>>>>> d5090815fd1f5b7beeb12316475084cff6fb9556
   h2:
     console:
       enabled: true
-      path: /h2-console
   jpa:
     hibernate:
       ddl-auto: create-drop
