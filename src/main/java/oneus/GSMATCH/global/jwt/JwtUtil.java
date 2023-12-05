@@ -23,7 +23,10 @@ public class JwtUtil {
     public static final String AUTHORIZATION_KEY = "auth";      // 사용자 권한 값의 KEY
     public static final String BEARER_PREFIX = "Bearer ";       // Token 식별자
     private static final long TOKEN_TIME = 60 * 60 * 1000L;        // 토큰 만료시간 : 60분
+<<<<<<< HEAD
+=======
     private static final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L;        // 토큰 만료시간 : 60분
+>>>>>>> d5090815fd1f5b7beeb12316475084cff6fb9556
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey (application.yml 에 추가해둔 값)
     private String secretKey;       // 그 값을 가져와서 secretKey 변수에 넣는다
