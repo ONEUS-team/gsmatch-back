@@ -60,7 +60,7 @@ public class UserService {
                 .grade(signupRequestDto.getGrade())
                 .gender(signupRequestDto.getGender())
                 .major(signupRequestDto.getMajor())
-                .type(signupRequestDto.getType())
+//                .type(signupRequestDto.getType())
                 .level(1) // default 레벨 1
                 .point(0) // default 포인트 0
                 .requestList(Collections.emptyList())
