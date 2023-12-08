@@ -32,10 +32,6 @@ public class SignupRequest {
     @Enumerated(EnumType.STRING)
     private Major major;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private Type type;
-
     @Getter
     private boolean admin = false;
     private String adminToken = "";
