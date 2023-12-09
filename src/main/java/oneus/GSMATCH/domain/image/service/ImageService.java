@@ -1,11 +1,11 @@
-package oneus.GSMATCH.image.service;
+package oneus.GSMATCH.domain.image.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import oneus.GSMATCH.image.dto.ImageRequestDto;
-import oneus.GSMATCH.image.dto.ImageResponseDto;
-import oneus.GSMATCH.image.repository.ImageRepository;
-import oneus.GSMATCH.image.entity.ImageEntity;
+import oneus.GSMATCH.domain.image.dto.ImageRequestDto;
+import oneus.GSMATCH.domain.image.dto.ImageResponseDto;
+import oneus.GSMATCH.domain.image.repository.ImageRepository;
+import oneus.GSMATCH.domain.image.entity.ImageEntity;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

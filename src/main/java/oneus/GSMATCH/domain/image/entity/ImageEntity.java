@@ -1,4 +1,4 @@
-package oneus.GSMATCH.image.entity;
+package oneus.GSMATCH.domain.image.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,9 +1,9 @@
-package oneus.GSMATCH.image.dto;
+package oneus.GSMATCH.domain.image.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import oneus.GSMATCH.image.entity.ImageEntity;
+import oneus.GSMATCH.domain.image.entity.ImageEntity;
 
 @Getter
 @NoArgsConstructor
