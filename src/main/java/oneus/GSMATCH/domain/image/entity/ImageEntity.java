@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import oneus.GSMATCH.domain.request.entity.RequestEntity;
 
 @Entity
 @Getter
@@ -25,6 +26,10 @@ public class ImageEntity {
 
     @Column(name = "image_path")
     private String imagePath;
+
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    private RequestEntity requestId;
 
     @Builder
     private ImageEntity(String originImageName, String imageName, String imagePath) {

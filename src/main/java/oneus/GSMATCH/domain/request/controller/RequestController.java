@@ -2,6 +2,7 @@ package oneus.GSMATCH.domain.request.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import oneus.GSMATCH.domain.image.service.ImageService;
 import oneus.GSMATCH.domain.request.dto.request.ModifyRequest;
 import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
 import oneus.GSMATCH.domain.request.dto.response.InfoResponse;
@@ -13,6 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,9 +25,17 @@ import org.springframework.web.bind.annotation.*;
 public class RequestController {
 
     private final RequestService requestService;
+    private final ImageService imageService;
 
-    @PostMapping
-    public ResponseEntity<MsgResponseDto> saveRequest(@RequestBody @Valid RequestRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<MsgResponseDto> saveRequest(
+            @Valid @ModelAttribute RequestRequest request,
+            @RequestParam("images") List<MultipartFile> images,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        if (images.size() > 3) {
+            return ResponseEntity.badRequest().body(new MsgResponseDto("이미지는 최대 3장까지 업로드 가능합니다.", HttpStatus.BAD_REQUEST.value()));
+        }
+
+        imageService.saveImage(images);
         requestService.saveRequest(request, userDetails.getUser());
         return ResponseEntity.ok(new MsgResponseDto("요청 보내기 완료.", HttpStatus.CREATED.value()));
     }
