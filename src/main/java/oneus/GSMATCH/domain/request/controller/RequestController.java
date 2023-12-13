@@ -27,9 +27,10 @@ public class RequestController {
     private final RequestService requestService;
     private final ImageService imageService;
 
+    @PostMapping(consumes = { "multipart/form-data" })
     public ResponseEntity<MsgResponseDto> saveRequest(
-            @Valid @ModelAttribute RequestRequest request,
-            @RequestParam("images") List<MultipartFile> images,
+            @Valid @RequestPart RequestRequest request,
+            @RequestPart("images") List<MultipartFile> images,
             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         if (images.size() > 3) {
             return ResponseEntity.badRequest().body(new MsgResponseDto("이미지는 최대 3장까지 업로드 가능합니다.", HttpStatus.BAD_REQUEST.value()));
