@@ -33,6 +33,7 @@ public class RequestService {
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
 
+    // 이미지 포함한 요청
     @Transactional
     public void saveRequest(RequestRequest createRequest, UserEntity userEntity, List<MultipartFile> images) throws IOException {
         ableSendRequest(userEntity);
@@ -59,6 +60,32 @@ public class RequestService {
             RequestEntity request = requestRepository.save(requestEntity);
 
             saveImage(images, request);
+        }
+    }
+
+    //이미지 포함하지 않은 요청
+    @Transactional
+    public void saveRequestWithoutImages(RequestRequest createRequest, UserEntity userEntity) {
+        ableSendRequest(userEntity);
+        RequestEntity requestEntity = createRequest.toEntity(userEntity);
+
+        List<Long> recipientsList = findRecipientsId(createRequest, userEntity.getType(), userEntity.getUsersId());
+
+        if (createRequest.getIsOnlyone() != null && createRequest.getIsOnlyone()) {
+            Long recipient = isOnlyOne(createRequest, userEntity.getType(), userEntity.getUsersId());
+            requestEntity.setRecipientsId(List.of(recipient));
+            requestEntity.setRequestOnly(true);
+            RequestEntity request = requestRepository.save(requestEntity);
+
+        }
+        // 일반요청
+        else {
+            if (recipientsList.isEmpty())
+                throw new CustomException(DONT_SEND_REQUEST);
+
+            requestEntity.setRecipientsId(recipientsList);
+            requestEntity.setRequestOnly(false);
+            RequestEntity request = requestRepository.save(requestEntity);
         }
     }
 
@@ -195,4 +222,3 @@ public class RequestService {
         return savedImageIds;
     }
 }
-

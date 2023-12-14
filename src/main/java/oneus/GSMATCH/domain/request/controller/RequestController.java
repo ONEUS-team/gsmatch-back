@@ -28,13 +28,21 @@ public class RequestController {
     @PostMapping(consumes = { "multipart/form-data" })
     public ResponseEntity<MsgResponseDto> saveRequest(
             @Valid @RequestPart RequestRequest request,
-            @RequestPart("images") List<MultipartFile> images,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        if (images.size() > 3) {
+
+        // 이미지 갯수 검사
+        if (images != null && !images.isEmpty() && images.size() > 3) {
             return ResponseEntity.badRequest().body(new MsgResponseDto("이미지는 최대 3장까지 업로드 가능합니다.", HttpStatus.BAD_REQUEST.value()));
         }
 
-        requestService.saveRequest(request, userDetails.getUser(), images);
+        // 이미지 포함 여부에 따라 다르게 처리
+        if (images != null && !images.isEmpty()) {
+            requestService.saveRequest(request, userDetails.getUser(), images);
+        } else {
+            requestService.saveRequestWithoutImages(request, userDetails.getUser());
+        }
+
         return ResponseEntity.ok(new MsgResponseDto("요청 보내기 완료.", HttpStatus.CREATED.value()));
     }
 
