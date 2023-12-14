@@ -1,6 +1,7 @@
 package oneus.GSMATCH.domain.request.service;
 
 import lombok.RequiredArgsConstructor;
+import oneus.GSMATCH.domain.image.service.ImageService;
 import oneus.GSMATCH.domain.request.dto.request.ModifyRequest;
 import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
 import oneus.GSMATCH.domain.request.dto.response.Author;
@@ -13,7 +14,9 @@ import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -26,9 +29,10 @@ import static oneus.GSMATCH.global.util.UserStateEnum.*;
 public class RequestService {
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
+    private final ImageService imageService;
 
     @Transactional
-    public void saveRequest(RequestRequest createRequest, UserEntity userEntity) {
+    public void saveRequest(RequestRequest createRequest, UserEntity userEntity, List<MultipartFile> images) throws IOException {
         ableSendRequest(userEntity);
         RequestEntity requestEntity = createRequest.toEntity(userEntity);
 
@@ -39,7 +43,9 @@ public class RequestService {
             Long recipient = isOnlyOne(createRequest, userEntity.getType(), userEntity.getUsersId());
             requestEntity.setRecipientsId(List.of(recipient));
             requestEntity.setRequestOnly(true);
-            requestRepository.save(requestEntity);
+            RequestEntity request = requestRepository.save(requestEntity);
+
+            imageService.saveImage(images, request);
         }
         // 일반요청
         else {
@@ -48,7 +54,9 @@ public class RequestService {
 
             requestEntity.setRecipientsId(recipientsList);
             requestEntity.setRequestOnly(false);
-            requestRepository.save(requestEntity);
+            RequestEntity request = requestRepository.save(requestEntity);
+
+            imageService.saveImage(images, request);
         }
     }
 

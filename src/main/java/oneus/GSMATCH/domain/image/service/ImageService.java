@@ -7,6 +7,7 @@ import oneus.GSMATCH.domain.image.dto.ImageResponseDto;
 import oneus.GSMATCH.domain.image.repository.ImageRepository;
 import oneus.GSMATCH.domain.image.entity.ImageEntity;
 
+import oneus.GSMATCH.domain.request.entity.RequestEntity;
 import oneus.GSMATCH.global.exception.CustomException;
 import oneus.GSMATCH.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
 
     @Transactional
-    public List<Long> saveImage(List<MultipartFile> images) throws IOException {
+    public List<Long> saveImage(List<MultipartFile> images, RequestEntity request) throws IOException {
         List<Long> savedImageIds = new ArrayList<>();
 
         for (MultipartFile image : images) {
@@ -52,6 +53,7 @@ public class ImageService {
                     .originImageName(image.getOriginalFilename())
                     .imagePath(file.getPath())
                     .imageName(fileName)
+                    .request(request)
                     .build();
 
             ImageEntity savedEntity = imageRepository.save(imageDto.toEntity());

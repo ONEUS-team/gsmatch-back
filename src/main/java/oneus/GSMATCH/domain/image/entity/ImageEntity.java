@@ -32,9 +32,10 @@ public class ImageEntity {
     private RequestEntity requestId;
 
     @Builder
-    private ImageEntity(String originImageName, String imageName, String imagePath) {
+    private ImageEntity(String originImageName, String imageName, String imagePath, RequestEntity requestId) {
         this.originImageName = originImageName;
         this.imageName = imageName;
         this.imagePath = imagePath;
+        this.requestId = requestId;
     }
 }
