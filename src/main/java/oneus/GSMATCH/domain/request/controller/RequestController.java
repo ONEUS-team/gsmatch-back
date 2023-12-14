@@ -2,7 +2,6 @@ package oneus.GSMATCH.domain.request.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import oneus.GSMATCH.domain.image.service.ImageService;
 import oneus.GSMATCH.domain.request.dto.request.ModifyRequest;
 import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
 import oneus.GSMATCH.domain.request.dto.response.InfoResponse;
@@ -25,7 +24,6 @@ import java.util.List;
 public class RequestController {
 
     private final RequestService requestService;
-    private final ImageService imageService;
 
     @PostMapping(consumes = { "multipart/form-data" })
     public ResponseEntity<MsgResponseDto> saveRequest(

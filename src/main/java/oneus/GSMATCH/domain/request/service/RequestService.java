@@ -1,7 +1,9 @@
 package oneus.GSMATCH.domain.request.service;
 
 import lombok.RequiredArgsConstructor;
-import oneus.GSMATCH.domain.image.service.ImageService;
+import oneus.GSMATCH.domain.image.dto.ImageRequestDto;
+import oneus.GSMATCH.domain.image.entity.ImageEntity;
+import oneus.GSMATCH.domain.image.repository.ImageRepository;
 import oneus.GSMATCH.domain.request.dto.request.ModifyRequest;
 import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
 import oneus.GSMATCH.domain.request.dto.response.Author;
@@ -12,14 +14,14 @@ import oneus.GSMATCH.domain.request.repository.RequestRepository;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
+import oneus.GSMATCH.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 import static oneus.GSMATCH.global.exception.ErrorCode.*;
 import static oneus.GSMATCH.global.util.UserStateEnum.*;
@@ -29,7 +31,7 @@ import static oneus.GSMATCH.global.util.UserStateEnum.*;
 public class RequestService {
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
-    private final ImageService imageService;
+    private final ImageRepository imageRepository;
 
     @Transactional
     public void saveRequest(RequestRequest createRequest, UserEntity userEntity, List<MultipartFile> images) throws IOException {
@@ -45,7 +47,7 @@ public class RequestService {
             requestEntity.setRequestOnly(true);
             RequestEntity request = requestRepository.save(requestEntity);
 
-            imageService.saveImage(images, request);
+            saveImage(images, request);
         }
         // 일반요청
         else {
@@ -56,7 +58,7 @@ public class RequestService {
             requestEntity.setRequestOnly(false);
             RequestEntity request = requestRepository.save(requestEntity);
 
-            imageService.saveImage(images, request);
+            saveImage(images, request);
         }
     }
 
@@ -152,6 +154,45 @@ public class RequestService {
                 .noneMatch(requestEntity -> Objects.equals(requestEntity.getRequestId(), requestId));
 
         return !requestRepository.existsByRequestId(requestId) || isNotUserSendRequest;
+    }
+
+    // 이미지 저장
+    private List<Long> saveImage(List<MultipartFile> images, RequestEntity request) throws IOException {
+        List<Long> savedImageIds = new ArrayList<>();
+
+        for (MultipartFile image : images) {
+            if(image != null &&
+                    !image.getOriginalFilename().toLowerCase().endsWith(".png") &&
+                    !image.getOriginalFilename().toLowerCase().endsWith(".jpg") &&
+                    !image.getOriginalFilename().toLowerCase().endsWith(".jpeg")){
+                throw new CustomException(ErrorCode.INVALID_IMAGE_EXTENSION);
+            }
+
+            String fileUUID = UUID.randomUUID().toString();
+
+            File file = new File(System.getProperty("user.dir") + File.separator + "/src/main/resources/images/");
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+
+            String fileName = fileUUID + "_" + image.getOriginalFilename();
+            file = new File(file.getPath() + File.separator + fileName);
+
+            // file 경로에 image 객체를 저장!
+            image.transferTo(file);
+
+            ImageRequestDto imageDto = ImageRequestDto.builder()
+                    .originImageName(image.getOriginalFilename())
+                    .imagePath(file.getPath())
+                    .imageName(fileName)
+                    .request(request)
+                    .build();
+
+            ImageEntity savedEntity = imageRepository.save(imageDto.toEntity());
+            savedImageIds.add(savedEntity.getImageId());
+        }
+
+        return savedImageIds;
     }
 }
 
