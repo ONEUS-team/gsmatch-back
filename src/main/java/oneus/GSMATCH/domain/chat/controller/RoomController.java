@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class RoomController {
@@ -22,5 +24,10 @@ public class RoomController {
     @PostMapping("/room")
     public ResponseEntity<RoomCreateResponse> createRoom(@RequestBody RoomCreateRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(chatService.createRoom(userDetails.getUser().getUsersId(), request.getRequestId()));
+    }
+
+    @GetMapping("/room")
+    public ResponseEntity<List<RoomResponse>> findRoomList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(chatService.roomListFind(userDetails.getUser()));
     }
 }

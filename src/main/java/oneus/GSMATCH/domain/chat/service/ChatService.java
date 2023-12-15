@@ -1,7 +1,9 @@
 package oneus.GSMATCH.domain.chat.service;
 
 import lombok.RequiredArgsConstructor;
+import oneus.GSMATCH.domain.chat.dto.response.Partner;
 import oneus.GSMATCH.domain.chat.dto.response.RoomCreateResponse;
+import oneus.GSMATCH.domain.chat.dto.response.RoomResponse;
 import oneus.GSMATCH.domain.chat.entity.RoomEntity;
 import oneus.GSMATCH.domain.chat.repository.ChatRepository;
 import oneus.GSMATCH.domain.chat.repository.RoomRepository;
@@ -12,6 +14,8 @@ import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
 import oneus.GSMATCH.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +44,29 @@ public class ChatService {
         RoomEntity room = roomRepository.save(RoomEntity.createRoom(request, toUser, fromUser));
 
         return new RoomCreateResponse(room.getId());
+    }
+
+    public List<RoomResponse> roomListFind(UserEntity user) {
+        return roomRepository.findByFromUserOrToUser(user, user).stream()
+                .map(room ->
+                        RoomResponse.builder()
+                                .id(room.getId())
+                                .roomName(room.getRequest().getTitle())
+                                .partner(room.getToUser().getUsersId().equals(user.getUsersId()) ? Partner.builder()
+                                        .id(room.getFromUser().getUsersId())
+                                        .name(room.getFromUser().getName())
+                                        .grade(room.getFromUser().getGrade())
+                                        .major(room.getFromUser().getMajor())
+                                        .type(room.getFromUser().getType())
+                                        .build()
+                                        : Partner.builder()
+                                        .id(room.getToUser().getUsersId())
+                                        .name(room.getToUser().getName())
+                                        .grade(room.getToUser().getGrade())
+                                        .major(room.getToUser().getMajor())
+                                        .type(room.getToUser().getType())
+                                        .build())
+                                .build())
+                .toList();
     }
 }
