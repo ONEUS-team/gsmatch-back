@@ -37,6 +37,14 @@ public class ResponseService {
 
     private ResponseInfo mapToRequestInfo(RequestEntity request, Long id) {
 
+        List<Long> requestImagesIds = Collections.emptyList();
+        List<String> imageNames = Collections.emptyList();
+        String image = null;
+
+        if (request.getRequestImagesList() != null && !request.getRequestImagesList().isEmpty()) {
+            image = "/images/" + request.getRequestImagesList().get(0).getImageName();
+        }
+
         return ResponseInfo.builder()
                 .responseId(request.getRequestId())
                 .title(request.getTitle())
@@ -45,9 +53,9 @@ public class ResponseService {
                 .authorName(request.getAuthor().getName())
                 .requestType(request.getRequestType())
                 .likes(request.getLikesId().contains(id))
+                .Image(image)
                 .build();
     }
-
     @Transactional
     public InfoRequest infoRequest(Long requestId, UserDetailsImpl userDetails) {
         RequestEntity request = repository.findById(requestId)
