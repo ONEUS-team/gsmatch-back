@@ -7,7 +7,6 @@ import oneus.GSMATCH.domain.image.repository.ImageRepository;
 import oneus.GSMATCH.domain.request.dto.request.ModifyRequest;
 import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
 import oneus.GSMATCH.domain.request.dto.response.Author;
-import oneus.GSMATCH.domain.request.dto.response.InfoImageResponse;
 import oneus.GSMATCH.domain.request.dto.response.InfoResponse;
 import oneus.GSMATCH.domain.request.dto.response.RangeResponse;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
@@ -103,7 +102,7 @@ public class RequestService {
     public InfoResponse infoRequest(Long requestId) {
         RequestEntity request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new CustomException(NOT_OK_REQUEST));
-        
+
         List<Long> requestImagesIds = Collections.emptyList();
         List<String> imageNames = Collections.emptyList();
 
@@ -113,7 +112,7 @@ public class RequestService {
                     .collect(Collectors.toList());
 
             imageNames = request.getRequestImagesList().stream()
-                    .map(ImageEntity::getImageName)
+                    .map(imageEntity -> "/images/" + imageEntity.getImageName())
                     .collect(Collectors.toList());
         }
 
@@ -216,7 +215,7 @@ public class RequestService {
 
             String fileUUID = UUID.randomUUID().toString();
 
-            File file = new File(System.getProperty("user.dir") + File.separator + "/src/main/resources/static/");
+            File file = new File(System.getProperty("user.dir") + File.separator + "/src/main/resources/static/images/");
             if (!file.exists()) {
                 file.mkdirs();
             }

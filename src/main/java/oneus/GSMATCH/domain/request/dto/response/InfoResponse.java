@@ -21,6 +21,4 @@ public class InfoResponse {
     private Author author;
     private List<String> imageNames;
 
-
-
 }
