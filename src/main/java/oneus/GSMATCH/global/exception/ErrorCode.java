@@ -22,7 +22,9 @@ public enum ErrorCode {
 
     DONT_SEND_REQUEST(HttpStatus.BAD_REQUEST, "요청을 보낼 수 없습니다."),
 
-    MANY_REQUEST(HttpStatus.BAD_REQUEST, "요청은 한번에 3개를 초과할 수 없습니다.");
+    MANY_REQUEST(HttpStatus.BAD_REQUEST, "요청은 한번에 3개를 초과할 수 없습니다."),
+
+    MANY_IMAGES(HttpStatus.BAD_REQUEST, "이미지는 최대 3장까지 업로드 가능합니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

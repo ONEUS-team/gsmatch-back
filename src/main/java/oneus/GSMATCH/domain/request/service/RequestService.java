@@ -15,6 +15,9 @@ import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
 import oneus.GSMATCH.global.exception.ErrorCode;
+import oneus.GSMATCH.global.util.MsgResponseDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,10 +40,15 @@ public class RequestService {
     // 이미지 포함한 요청 저장
     @Transactional
     public void saveRequest(RequestRequest createRequest, UserEntity userEntity, List<MultipartFile> images) throws IOException {
+
         ableSendRequest(userEntity);
         RequestEntity requestEntity = createRequest.toEntity(userEntity);
 
         List<Long> recipientsList = findRecipientsId(createRequest, userEntity.getType(), userEntity.getUsersId());
+
+        if (images != null && !images.isEmpty() && images.size() > 3) {
+            throw new CustomException(MANY_IMAGES);
+        }
 
         // 특수요청
         if (createRequest.getIsOnlyone() != null && createRequest.getIsOnlyone()) {

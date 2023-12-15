@@ -16,4 +16,5 @@ public class InfoRequest {
     private Author author;
     private RequestType requestType;
     private Boolean likes;
+    private String Image;
 }

@@ -32,11 +32,6 @@ public class RequestController {
             @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
-        // 이미지 갯수 검사
-        if (images != null && !images.isEmpty() && images.size() > 3) {
-            return ResponseEntity.badRequest().body(new MsgResponseDto("이미지는 최대 3장까지 업로드 가능합니다.", HttpStatus.BAD_REQUEST.value()));
-        }
-
         // 이미지 포함 여부에 따라 다르게 처리
         if (images != null && !images.isEmpty()) {
             requestService.saveRequest(request, userDetails.getUser(), images);
