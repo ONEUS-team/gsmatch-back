@@ -3,6 +3,7 @@
 
 import jakarta.persistence.*;
 import lombok.*;
+import oneus.GSMATCH.domain.chat.entity.RoomEntity;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.image.entity.ImageEntity;
 
@@ -69,6 +70,9 @@ import java.util.List;
         @ElementCollection
         @Column(name = "likes_id")
         private List<Long> likesId;
+
+        @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<RoomEntity> roomEntityList;
 
         public void setRecipientsId(List<Long> recipientsId) {
             this.recipientsId = recipientsId;

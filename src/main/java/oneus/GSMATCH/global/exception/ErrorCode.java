@@ -22,6 +22,12 @@ public enum ErrorCode {
 
     DONT_SEND_REQUEST(HttpStatus.BAD_REQUEST, "요청을 보낼 수 없습니다."),
 
+    NOT_FOUND_REQUEST(HttpStatus.BAD_REQUEST, "요청을 찾을 수 없습니다."),
+
+    NOT_FOUND_CHAT(HttpStatus.BAD_REQUEST, "채팅을 찾을 수 없습니다."),
+
+    DUPLICATED_CHAT(HttpStatus.BAD_REQUEST, "중복된 채팅방 생성 요청입니다."),
+
     MANY_REQUEST(HttpStatus.BAD_REQUEST, "요청은 한번에 3개를 초과할 수 없습니다.");
 
     private final HttpStatus httpStatus;
