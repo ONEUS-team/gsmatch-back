@@ -1,10 +1,8 @@
 package oneus.GSMATCH.domain.chat.service;
 
 import lombok.RequiredArgsConstructor;
-import oneus.GSMATCH.domain.chat.dto.response.ChatResponse;
-import oneus.GSMATCH.domain.chat.dto.response.Partner;
-import oneus.GSMATCH.domain.chat.dto.response.RoomCreateResponse;
-import oneus.GSMATCH.domain.chat.dto.response.RoomResponse;
+import oneus.GSMATCH.domain.chat.dto.response.*;
+import oneus.GSMATCH.domain.chat.entity.ChatEntity;
 import oneus.GSMATCH.domain.chat.entity.RoomEntity;
 import oneus.GSMATCH.domain.chat.repository.ChatRepository;
 import oneus.GSMATCH.domain.chat.repository.RoomRepository;
@@ -76,8 +74,22 @@ public class ChatService {
                 .build();
     }
 
-    public List<ChatResponse> chatListFind(Long roomId) {
+    public List<ChatResponse> chatListFind(Long roomId, UserEntity user) {
+         List<ChatResponse> chats = chatRepository.findAllByRoomId(roomId).stream()
+                .map(chat -> ChatResponse.builder()
+                        .id(chat.getId())
+                        .sender(Sender.builder()
+                                .senderId(chat.getSender().getUsersId())
+                                .senderName(chat.getSender().getName())
+                                .build())
+                        .message(chat.getMessage())
+                        .sendDate(chat.getSendDate())
+                        .build()).toList();
 
+         if (chats.stream().noneMatch(chat -> chat.getSender().getSenderId().equals(user.getUsersId())))
+             throw new CustomException(ErrorCode.NOT_FOUND_CHAT);
+
+         return chats;
     }
 
     private Partner setPartner(RoomEntity room, UserEntity user) {

@@ -35,7 +35,7 @@ public class RoomController {
     }
 
     @GetMapping("/chat/{roomId}")
-    public ResponseEntity<List<ChatResponse>> findChatList(@PathVariable Long roomId) {
-        return ResponseEntity.ok(chatService.chatListFind(roomId));
+    public ResponseEntity<List<ChatResponse>> findChatList(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(chatService.chatListFind(roomId, userDetails.getUser()));
     }
 }
