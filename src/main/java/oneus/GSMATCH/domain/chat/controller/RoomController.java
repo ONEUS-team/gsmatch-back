@@ -8,10 +8,7 @@ import oneus.GSMATCH.domain.chat.service.ChatService;
 import oneus.GSMATCH.global.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,5 +26,10 @@ public class RoomController {
     @GetMapping("/room")
     public ResponseEntity<List<RoomResponse>> findRoomList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(chatService.roomListFind(userDetails.getUser()));
+    }
+
+    @GetMapping("/room/{roomId}")
+    public ResponseEntity<RoomResponse> findRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long roomId) {
+        return ResponseEntity.ok(chatService.roomFind(userDetails.getUser(), Long roomId));
     }
 }
