@@ -30,6 +30,6 @@ public class RoomController {
 
     @GetMapping("/room/{roomId}")
     public ResponseEntity<RoomResponse> findRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long roomId) {
-        return ResponseEntity.ok(chatService.roomFind(userDetails.getUser(), Long roomId));
+        return ResponseEntity.ok(chatService.roomFind(userDetails.getUser(), roomId));
     }
 }

@@ -16,6 +16,7 @@ import oneus.GSMATCH.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -52,21 +53,40 @@ public class ChatService {
                         RoomResponse.builder()
                                 .id(room.getId())
                                 .roomName(room.getRequest().getTitle())
-                                .partner(room.getToUser().getUsersId().equals(user.getUsersId()) ? Partner.builder()
-                                        .id(room.getFromUser().getUsersId())
-                                        .name(room.getFromUser().getName())
-                                        .grade(room.getFromUser().getGrade())
-                                        .major(room.getFromUser().getMajor())
-                                        .type(room.getFromUser().getType())
-                                        .build()
-                                        : Partner.builder()
-                                        .id(room.getToUser().getUsersId())
-                                        .name(room.getToUser().getName())
-                                        .grade(room.getToUser().getGrade())
-                                        .major(room.getToUser().getMajor())
-                                        .type(room.getToUser().getType())
-                                        .build())
+                                .partner(setPartner(room, user))
                                 .build())
                 .toList();
+    }
+
+    public RoomResponse roomFind(UserEntity user, Long roomId) {
+        RoomEntity room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REQUEST));
+
+        if (!Objects.equals(room.getFromUser().getUsersId(), user.getUsersId()) &&
+                !Objects.equals(room.getToUser().getUsersId(), user.getUsersId()))
+            throw new CustomException(ErrorCode.NOT_FOUND_REQUEST);
+
+        return RoomResponse.builder()
+                .id(room.getId())
+                .roomName(room.getRequest().getTitle())
+                .partner(setPartner(room, user))
+                .build();
+    }
+
+    private Partner setPartner(RoomEntity room, UserEntity user) {
+        return room.getToUser().getUsersId().equals(user.getUsersId()) ? Partner.builder()
+                .id(room.getFromUser().getUsersId())
+                .name(room.getFromUser().getName())
+                .grade(room.getFromUser().getGrade())
+                .major(room.getFromUser().getMajor())
+                .type(room.getFromUser().getType())
+                .build()
+                : Partner.builder()
+                .id(room.getToUser().getUsersId())
+                .name(room.getToUser().getName())
+                .grade(room.getToUser().getGrade())
+                .major(room.getToUser().getMajor())
+                .type(room.getToUser().getType())
+                .build();
     }
 }
