@@ -7,6 +7,7 @@ import oneus.GSMATCH.domain.image.repository.ImageRepository;
 import oneus.GSMATCH.domain.request.dto.request.ModifyRequest;
 import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
 import oneus.GSMATCH.domain.request.dto.response.Author;
+import oneus.GSMATCH.domain.request.dto.response.InfoImageResponse;
 import oneus.GSMATCH.domain.request.dto.response.InfoResponse;
 import oneus.GSMATCH.domain.request.dto.response.RangeResponse;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static oneus.GSMATCH.global.exception.ErrorCode.*;
 import static oneus.GSMATCH.global.util.UserStateEnum.*;
@@ -101,7 +103,21 @@ public class RequestService {
     public InfoResponse infoRequest(Long requestId) {
         RequestEntity request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new CustomException(NOT_OK_REQUEST));
-        return InfoResponse.builder()
+        
+        List<Long> requestImagesIds = Collections.emptyList();
+        List<String> imageNames = Collections.emptyList();
+
+        if (request.getRequestImagesList() != null) {
+            requestImagesIds = request.getRequestImagesList().stream()
+                    .map(ImageEntity::getImageId)
+                    .collect(Collectors.toList());
+
+            imageNames = request.getRequestImagesList().stream()
+                    .map(ImageEntity::getImageName)
+                    .collect(Collectors.toList());
+        }
+
+        InfoResponse response = InfoResponse.builder()
                 .id(request.getRequestId())
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -112,7 +128,10 @@ public class RequestService {
                         .type(request.getAuthor().getType())
                         .level(request.getAuthor().getLevel())
                         .build())
+                .imageNames(imageNames)
                 .build();
+
+        return response;
     }
 
     @Transactional
