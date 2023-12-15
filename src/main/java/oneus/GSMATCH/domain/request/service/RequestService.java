@@ -36,8 +36,7 @@ public class RequestService {
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
-
-    // 이미지 포함한 요청 저장
+    
     @Transactional
     public void saveRequest(RequestRequest createRequest, UserEntity userEntity, List<MultipartFile> images) throws IOException {
 
@@ -50,51 +49,44 @@ public class RequestService {
             throw new CustomException(MANY_IMAGES);
         }
 
-        // 특수요청
-        if (createRequest.getIsOnlyone() != null && createRequest.getIsOnlyone()) {
-            Long recipient = isOnlyOne(createRequest, userEntity.getType(), userEntity.getUsersId());
-            requestEntity.setRecipientsId(List.of(recipient));
-            requestEntity.setRequestOnly(true);
-            RequestEntity request = requestRepository.save(requestEntity);
+        if (images != null && !images.isEmpty()) {
+            // 특수요청
+            if (createRequest.getIsOnlyone() != null && createRequest.getIsOnlyone()) {
+                Long recipient = isOnlyOne(createRequest, userEntity.getType(), userEntity.getUsersId());
+                requestEntity.setRecipientsId(List.of(recipient));
+                requestEntity.setRequestOnly(true);
+                RequestEntity request = requestRepository.save(requestEntity);
 
-            saveImage(images, request);
-        }
-        // 일반요청
-        else {
-            if (recipientsList.isEmpty())
-                throw new CustomException(DONT_SEND_REQUEST);
+                saveImage(images, request);
+            }
+            // 일반요청
+            else {
+                if (recipientsList.isEmpty())
+                    throw new CustomException(DONT_SEND_REQUEST);
 
-            requestEntity.setRecipientsId(recipientsList);
-            requestEntity.setRequestOnly(false);
-            RequestEntity request = requestRepository.save(requestEntity);
+                requestEntity.setRecipientsId(recipientsList);
+                requestEntity.setRequestOnly(false);
+                RequestEntity request = requestRepository.save(requestEntity);
 
-            saveImage(images, request);
-        }
-    }
+                saveImage(images, request);
+            }
+        } else{
+            if (createRequest.getIsOnlyone() != null && createRequest.getIsOnlyone()) {
+                Long recipient = isOnlyOne(createRequest, userEntity.getType(), userEntity.getUsersId());
+                requestEntity.setRecipientsId(List.of(recipient));
+                requestEntity.setRequestOnly(true);
+                RequestEntity request = requestRepository.save(requestEntity);
 
-    //이미지 포함하지 않은 요청 저장
-    @Transactional
-    public void saveRequestWithoutImages(RequestRequest createRequest, UserEntity userEntity) {
-        ableSendRequest(userEntity);
-        RequestEntity requestEntity = createRequest.toEntity(userEntity);
+            }
+            // 일반요청
+            else {
+                if (recipientsList.isEmpty())
+                    throw new CustomException(DONT_SEND_REQUEST);
 
-        List<Long> recipientsList = findRecipientsId(createRequest, userEntity.getType(), userEntity.getUsersId());
-
-        if (createRequest.getIsOnlyone() != null && createRequest.getIsOnlyone()) {
-            Long recipient = isOnlyOne(createRequest, userEntity.getType(), userEntity.getUsersId());
-            requestEntity.setRecipientsId(List.of(recipient));
-            requestEntity.setRequestOnly(true);
-            RequestEntity request = requestRepository.save(requestEntity);
-
-        }
-        // 일반요청
-        else {
-            if (recipientsList.isEmpty())
-                throw new CustomException(DONT_SEND_REQUEST);
-
-            requestEntity.setRecipientsId(recipientsList);
-            requestEntity.setRequestOnly(false);
-            RequestEntity request = requestRepository.save(requestEntity);
+                requestEntity.setRecipientsId(recipientsList);
+                requestEntity.setRequestOnly(false);
+                RequestEntity request = requestRepository.save(requestEntity);
+            }
         }
     }
 
