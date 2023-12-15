@@ -33,7 +33,7 @@ public class RequestService {
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
 
-    // 이미지 포함한 요청
+    // 이미지 포함한 요청 저장
     @Transactional
     public void saveRequest(RequestRequest createRequest, UserEntity userEntity, List<MultipartFile> images) throws IOException {
         ableSendRequest(userEntity);
@@ -63,7 +63,7 @@ public class RequestService {
         }
     }
 
-    //이미지 포함하지 않은 요청
+    //이미지 포함하지 않은 요청 저장
     @Transactional
     public void saveRequestWithoutImages(RequestRequest createRequest, UserEntity userEntity) {
         ableSendRequest(userEntity);
@@ -197,7 +197,7 @@ public class RequestService {
 
             String fileUUID = UUID.randomUUID().toString();
 
-            File file = new File(System.getProperty("user.dir") + File.separator + "/src/main/resources/images/");
+            File file = new File(System.getProperty("user.dir") + File.separator + "/src/main/resources/static/");
             if (!file.exists()) {
                 file.mkdirs();
             }
