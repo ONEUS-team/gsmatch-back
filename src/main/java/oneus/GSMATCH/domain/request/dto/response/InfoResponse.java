@@ -20,5 +20,4 @@ public class InfoResponse {
     private Boolean requestOnly;
     private Author author;
     private List<String> imageNames;
-
 }

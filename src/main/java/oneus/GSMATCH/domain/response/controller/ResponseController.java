@@ -35,5 +35,4 @@ public class ResponseController {
     public ResponseEntity<MsgResponseDto> likes(@RequestBody @Valid ResponseId requestId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(new MsgResponseDto(responseService.toggleLike(requestId, userDetails.getUser().getUsersId()), HttpStatus.OK.value()));
     }
-
 }

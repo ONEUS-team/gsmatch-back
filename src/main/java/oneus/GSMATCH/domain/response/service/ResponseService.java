@@ -1,6 +1,7 @@
 package oneus.GSMATCH.domain.response.service;
 
 import lombok.RequiredArgsConstructor;
+import oneus.GSMATCH.domain.image.entity.ImageEntity;
 import oneus.GSMATCH.domain.request.dto.response.Author;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
 import oneus.GSMATCH.domain.response.dto.response.InfoRequest;
@@ -16,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +36,7 @@ public class ResponseService {
     }
 
     private ResponseInfo mapToRequestInfo(RequestEntity request, Long id) {
+
         return ResponseInfo.builder()
                 .responseId(request.getRequestId())
                 .title(request.getTitle())
@@ -49,6 +53,20 @@ public class ResponseService {
         RequestEntity request = repository.findById(requestId)
                 .orElseThrow(() ->  new CustomException(ErrorCode.NOT_OK_REQUEST));
 
+        List<Long> requestImagesIds = Collections.emptyList();
+        List<String> imageNames = Collections.emptyList();
+
+        if (request.getRequestImagesList() != null) {
+            requestImagesIds = request.getRequestImagesList().stream()
+                    .map(ImageEntity::getImageId)
+                    .collect(Collectors.toList());
+
+            imageNames = request.getRequestImagesList().stream()
+                    .map(imageEntity -> "/images/" + imageEntity.getImageName())
+                    .collect(Collectors.toList());
+        }
+
+
         if (request.getRecipientsId().contains(userDetails.getUser().getUsersId())) {
             return InfoRequest.builder()
                     .responseId(request.getRequestId())
@@ -62,7 +80,9 @@ public class ResponseService {
                             .level(request.getAuthor().getLevel())
                             .build())
                     .likes(request.getLikesId().contains(userDetails.getUser().getUsersId()))
+                    .imageNames(imageNames)
                     .requestType(request.getRequestType()).build();
+
         }
         else return null;
 

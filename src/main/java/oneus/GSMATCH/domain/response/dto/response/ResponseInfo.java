@@ -2,6 +2,8 @@ package oneus.GSMATCH.domain.response.dto.response;
 
 import lombok.*;
 
+import java.util.List;
+
 import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 @Getter
@@ -16,5 +18,4 @@ public class ResponseInfo {
     private Boolean requestOnly;
     private String title;
     private String content;
-
 }

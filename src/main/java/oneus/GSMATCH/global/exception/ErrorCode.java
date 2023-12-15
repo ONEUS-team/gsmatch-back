@@ -18,7 +18,7 @@ public enum ErrorCode {
 
     INVALID_IMAGE_EXTENSION(HttpStatus.BAD_REQUEST, "잘못된 이미지 확장자 입니다."),
 
-    NOT_OK_REQUEST(HttpStatus.BAD_REQUEST, "유요한 요청이 아닙니다."),
+    NOT_OK_REQUEST(HttpStatus.BAD_REQUEST, "유효한 요청이 아닙니다."),
 
     DONT_SEND_REQUEST(HttpStatus.BAD_REQUEST, "요청을 보낼 수 없습니다."),
 
