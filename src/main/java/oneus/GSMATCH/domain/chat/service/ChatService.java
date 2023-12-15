@@ -42,6 +42,8 @@ public class ChatService {
         UserEntity toUser = userRepository.findById(toUserId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_MATCH_INFORMATION));
 
+        if (roomRepository.existsByRequestAndToUser(request, toUser)) throw new CustomException(ErrorCode.DUPLICATED_CHAT);
+
         RoomEntity room = roomRepository.save(RoomEntity.createRoom(request, toUser, fromUser));
 
         return new RoomCreateResponse(room.getId());
