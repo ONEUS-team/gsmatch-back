@@ -86,10 +86,24 @@ public class ChatService {
                         .sendDate(chat.getSendDate())
                         .build()).toList();
 
-         if (chats.stream().noneMatch(chat -> chat.getSender().getSenderId().equals(user.getUsersId())))
-             throw new CustomException(ErrorCode.NOT_FOUND_CHAT);
-
          return chats;
+    }
+
+    public ChatResponse createChat(Long roomId, UserEntity user, String message) {
+        RoomEntity room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CHAT));
+
+        ChatEntity chat = chatRepository.save(ChatEntity.createChat(room, user, message));
+
+        return ChatResponse.builder()
+                .id(chat.getId())
+                .sender(Sender.builder()
+                        .senderId(chat.getSender().getUsersId())
+                        .senderName(chat.getSender().getName())
+                        .build())
+                .message(chat.getMessage())
+                .sendDate(chat.getSendDate())
+                .build();
     }
 
     private Partner setPartner(RoomEntity room, UserEntity user) {

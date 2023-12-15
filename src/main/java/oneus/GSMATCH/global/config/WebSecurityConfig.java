@@ -83,6 +83,7 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/refresh")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/ws-stomp/**")).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .anyRequest().authenticated()
         );
@@ -90,6 +91,8 @@ public class WebSecurityConfig {
         // 필터 관리
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
+
+        http.cors((cors) -> cors.configurationSource(corsConfigurationSource()));
 
         return http.build();
     }
@@ -103,7 +106,7 @@ public class WebSecurityConfig {
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("Authorization");
         configuration.addExposedHeader("Refresh-Token");
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

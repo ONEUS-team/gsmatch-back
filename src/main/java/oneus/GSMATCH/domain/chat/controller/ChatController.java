@@ -2,6 +2,8 @@ package oneus.GSMATCH.domain.chat.controller;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import oneus.GSMATCH.domain.chat.dto.request.ChatMessage;
+import oneus.GSMATCH.domain.chat.dto.response.ChatResponse;
 import oneus.GSMATCH.domain.chat.service.ChatService;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
@@ -25,7 +27,7 @@ public class ChatController {
 
     @MessageMapping("/{roomId}")
     @SendTo("/room/{roomId}")
-    public ChatMessage test(@DestinationVariable Long roomId, ChatMessage message) {
+    public ChatResponse test(@DestinationVariable Long roomId, ChatMessage message) {
         if (!jwtUtil.validateToken(message.getToken().substring(7))) {
             throw new CustomException(INVALID_TOKEN);
         }
