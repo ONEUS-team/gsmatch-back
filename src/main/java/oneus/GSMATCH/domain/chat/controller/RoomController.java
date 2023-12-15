@@ -2,6 +2,7 @@ package oneus.GSMATCH.domain.chat.controller;
 
 import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.chat.dto.request.RoomCreateRequest;
+import oneus.GSMATCH.domain.chat.dto.response.ChatResponse;
 import oneus.GSMATCH.domain.chat.dto.response.RoomCreateResponse;
 import oneus.GSMATCH.domain.chat.dto.response.RoomResponse;
 import oneus.GSMATCH.domain.chat.service.ChatService;
@@ -31,5 +32,10 @@ public class RoomController {
     @GetMapping("/room/{roomId}")
     public ResponseEntity<RoomResponse> findRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long roomId) {
         return ResponseEntity.ok(chatService.roomFind(userDetails.getUser(), roomId));
+    }
+
+    @GetMapping("/chat/{roomId}")
+    public ResponseEntity<List<ChatResponse>> findChatList(@PathVariable Long roomId) {
+        return ResponseEntity.ok(chatService.chatListFind(roomId));
     }
 }

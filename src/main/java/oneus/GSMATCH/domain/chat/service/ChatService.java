@@ -1,6 +1,7 @@
 package oneus.GSMATCH.domain.chat.service;
 
 import lombok.RequiredArgsConstructor;
+import oneus.GSMATCH.domain.chat.dto.response.ChatResponse;
 import oneus.GSMATCH.domain.chat.dto.response.Partner;
 import oneus.GSMATCH.domain.chat.dto.response.RoomCreateResponse;
 import oneus.GSMATCH.domain.chat.dto.response.RoomResponse;
@@ -73,6 +74,10 @@ public class ChatService {
                 .roomName(room.getRequest().getTitle())
                 .partner(setPartner(room, user))
                 .build();
+    }
+
+    public List<ChatResponse> chatListFind(Long roomId) {
+
     }
 
     private Partner setPartner(RoomEntity room, UserEntity user) {
