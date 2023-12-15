@@ -64,4 +64,8 @@ public class UserEntity {
         this.type = type;
     }
 
+    public void setPoint (Integer point) {
+        this.point=point;
+    }
+
 }
