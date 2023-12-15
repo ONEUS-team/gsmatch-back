@@ -5,6 +5,8 @@ import lombok.*;
 import oneus.GSMATCH.domain.request.entity.RequestEntity;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,6 +30,9 @@ public class RoomEntity {
     @ManyToOne
     @JoinColumn(name = "from_user")
     private UserEntity fromUser;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatEntity> chatEntityList;
 
     public static RoomEntity createRoom(RequestEntity request, UserEntity toUser, UserEntity fromUser) {
         return RoomEntity.builder()
