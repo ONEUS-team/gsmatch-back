@@ -86,10 +86,10 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/refresh")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/resources/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/images/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/images/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/ws-stomp/**")).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
         );
 
         // 필터 관리
