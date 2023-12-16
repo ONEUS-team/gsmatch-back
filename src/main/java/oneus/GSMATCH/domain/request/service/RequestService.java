@@ -82,6 +82,7 @@ public class RequestService {
             requestEntity.setRequestOnly(true);
             RequestEntity request = requestRepository.save(requestEntity);
 
+            point.requestPoint(userEntity.getUsersId());
         }
         // 일반요청
         else {
@@ -91,6 +92,7 @@ public class RequestService {
             requestEntity.setRecipientsId(recipientsList);
             requestEntity.setRequestOnly(false);
             RequestEntity request = requestRepository.save(requestEntity);
+            point.requestPoint(userEntity.getUsersId());
         }
     }
 

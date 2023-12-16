@@ -1,18 +1,15 @@
 package oneus.GSMATCH.global.level;
 
+import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class Point {
     private final UserRepository userRepository;
-
-    @Autowired
-    public Point(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final Level level;
 
     public void requestPoint(Long id) {
         UserEntity userEntity = userRepository.findById(id)
@@ -21,5 +18,6 @@ public class Point {
         userEntity.setPoint(userEntity.getPoint() + 6);
 
         userRepository.save(userEntity);
+        level.levelUp(id);
     }
 }
