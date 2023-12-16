@@ -89,7 +89,7 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/images/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/ws-stomp/**")).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
         );
 
         // 필터 관리
