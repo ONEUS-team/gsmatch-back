@@ -66,7 +66,7 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer configure() {
         return (web) -> web.ignoring()
 //               .requestMatchers(toH2Console())
-                .requestMatchers("/images/**")
+                .requestMatchers("/resources/static/images/**")
                 ;
     }
 
@@ -88,7 +88,7 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/resources/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/ws-stomp/**")).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
         );
 
         // 필터 관리
