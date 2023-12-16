@@ -12,6 +12,8 @@ public enum ErrorCode {
 
     DUPLICATED_USERNAME(HttpStatus.BAD_REQUEST, "중복된 사용자 입니다"),
 
+    NOT_GSM_EMAIL(HttpStatus.BAD_REQUEST, "학교 계정으로만 회원가입할 수 있습니다."),
+
     NOT_MATCH_INFORMATION(HttpStatus.BAD_REQUEST, "사용자를 찾을 수 없습니다."),
 
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "토큰이 유효하지 않습니다."),
