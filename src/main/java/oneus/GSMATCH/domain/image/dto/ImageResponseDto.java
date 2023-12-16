@@ -1,4 +1,4 @@
-package oneus.GSMATCH.image.dto;
+package oneus.GSMATCH.domain.image.dto;
 
 import lombok.Builder;
 import lombok.Getter;

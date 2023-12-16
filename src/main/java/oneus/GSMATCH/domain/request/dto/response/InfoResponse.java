@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+
 import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 @Getter
@@ -16,5 +19,5 @@ public class InfoResponse {
     private String content;
     private Boolean requestOnly;
     private Author author;
+    private List<String> imageNames;
 }
-

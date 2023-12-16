@@ -1,6 +1,9 @@
 package oneus.GSMATCH.domain.request.service;
 
 import lombok.RequiredArgsConstructor;
+import oneus.GSMATCH.domain.image.dto.ImageRequestDto;
+import oneus.GSMATCH.domain.image.entity.ImageEntity;
+import oneus.GSMATCH.domain.image.repository.ImageRepository;
 import oneus.GSMATCH.domain.request.dto.request.ModifyRequest;
 import oneus.GSMATCH.domain.request.dto.request.RequestRequest;
 import oneus.GSMATCH.domain.request.dto.response.Author;
@@ -11,12 +14,15 @@ import oneus.GSMATCH.domain.request.repository.RequestRepository;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
+import oneus.GSMATCH.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static oneus.GSMATCH.global.exception.ErrorCode.*;
 import static oneus.GSMATCH.global.util.UserStateEnum.*;
@@ -26,29 +32,58 @@ import static oneus.GSMATCH.global.util.UserStateEnum.*;
 public class RequestService {
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
-
+    private final ImageRepository imageRepository;
+    
     @Transactional
-    public void saveRequest(RequestRequest createRequest, UserEntity userEntity) {
+    public void saveRequest(RequestRequest createRequest, UserEntity userEntity, List<MultipartFile> images) throws IOException {
+
         ableSendRequest(userEntity);
         RequestEntity requestEntity = createRequest.toEntity(userEntity);
 
         List<Long> recipientsList = findRecipientsId(createRequest, userEntity.getType(), userEntity.getUsersId());
 
-        // 특수요청
-        if (createRequest.getIsOnlyone() != null && createRequest.getIsOnlyone()) {
-            Long recipient = isOnlyOne(createRequest, userEntity.getType(), userEntity.getUsersId());
-            requestEntity.setRecipientsId(List.of(recipient));
-            requestEntity.setRequestOnly(true);
-            requestRepository.save(requestEntity);
+        if (images != null && !images.isEmpty() && images.size() > 3) {
+            throw new CustomException(MANY_IMAGES);
         }
-        // 일반요청
-        else {
-            if (recipientsList.isEmpty())
-                throw new CustomException(DONT_SEND_REQUEST);
 
-            requestEntity.setRecipientsId(recipientsList);
-            requestEntity.setRequestOnly(false);
-            requestRepository.save(requestEntity);
+        if (images != null && !images.isEmpty()) {
+            // 특수요청
+            if (createRequest.getIsOnlyone() != null && createRequest.getIsOnlyone()) {
+                Long recipient = isOnlyOne(createRequest, userEntity.getType(), userEntity.getUsersId());
+                requestEntity.setRecipientsId(List.of(recipient));
+                requestEntity.setRequestOnly(true);
+                RequestEntity request = requestRepository.save(requestEntity);
+
+                saveImage(images, request);
+            }
+            // 일반요청
+            else {
+                if (recipientsList.isEmpty())
+                    throw new CustomException(DONT_SEND_REQUEST);
+
+                requestEntity.setRecipientsId(recipientsList);
+                requestEntity.setRequestOnly(false);
+                RequestEntity request = requestRepository.save(requestEntity);
+
+                saveImage(images, request);
+            }
+        } else{
+            if (createRequest.getIsOnlyone() != null && createRequest.getIsOnlyone()) {
+                Long recipient = isOnlyOne(createRequest, userEntity.getType(), userEntity.getUsersId());
+                requestEntity.setRecipientsId(List.of(recipient));
+                requestEntity.setRequestOnly(true);
+                RequestEntity request = requestRepository.save(requestEntity);
+
+            }
+            // 일반요청
+            else {
+                if (recipientsList.isEmpty())
+                    throw new CustomException(DONT_SEND_REQUEST);
+
+                requestEntity.setRecipientsId(recipientsList);
+                requestEntity.setRequestOnly(false);
+                RequestEntity request = requestRepository.save(requestEntity);
+            }
         }
     }
 
@@ -64,7 +99,21 @@ public class RequestService {
     public InfoResponse infoRequest(Long requestId) {
         RequestEntity request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new CustomException(NOT_OK_REQUEST));
-        return InfoResponse.builder()
+
+        List<Long> requestImagesIds = Collections.emptyList();
+        List<String> imageNames = Collections.emptyList();
+
+        if (request.getRequestImagesList() != null) {
+            requestImagesIds = request.getRequestImagesList().stream()
+                    .map(ImageEntity::getImageId)
+                    .collect(Collectors.toList());
+
+            imageNames = request.getRequestImagesList().stream()
+                    .map(imageEntity -> "/images/" + imageEntity.getImageName())
+                    .collect(Collectors.toList());
+        }
+
+        InfoResponse response = InfoResponse.builder()
                 .id(request.getRequestId())
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -75,7 +124,10 @@ public class RequestService {
                         .type(request.getAuthor().getType())
                         .level(request.getAuthor().getLevel())
                         .build())
+                .imageNames(imageNames)
                 .build();
+
+        return response;
     }
 
     @Transactional
@@ -145,5 +197,43 @@ public class RequestService {
 
         return !requestRepository.existsByRequestId(requestId) || isNotUserSendRequest;
     }
-}
 
+    // 이미지 저장
+    private List<Long> saveImage(List<MultipartFile> images, RequestEntity request) throws IOException {
+        List<Long> savedImageIds = new ArrayList<>();
+
+        for (MultipartFile image : images) {
+            if(image != null &&
+                    !image.getOriginalFilename().toLowerCase().endsWith(".png") &&
+                    !image.getOriginalFilename().toLowerCase().endsWith(".jpg") &&
+                    !image.getOriginalFilename().toLowerCase().endsWith(".jpeg")){
+                throw new CustomException(ErrorCode.INVALID_IMAGE_EXTENSION);
+            }
+
+            String fileUUID = UUID.randomUUID().toString();
+
+            File file = new File(System.getProperty("user.dir") + File.separator + "/src/main/resources/static/images/");
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+
+            String fileName = fileUUID + "_" + image.getOriginalFilename();
+            file = new File(file.getPath() + File.separator + fileName);
+
+            // file 경로에 image 객체를 저장!
+            image.transferTo(file);
+
+            ImageRequestDto imageDto = ImageRequestDto.builder()
+                    .originImageName(image.getOriginalFilename())
+                    .imagePath(file.getPath())
+                    .imageName(fileName)
+                    .request(request)
+                    .build();
+
+            ImageEntity savedEntity = imageRepository.save(imageDto.toEntity());
+            savedImageIds.add(savedEntity.getImageId());
+        }
+
+        return savedImageIds;
+    }
+}

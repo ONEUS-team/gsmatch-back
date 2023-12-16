@@ -13,6 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,9 +26,13 @@ public class RequestController {
 
     private final RequestService requestService;
 
-    @PostMapping
-    public ResponseEntity<MsgResponseDto> saveRequest(@RequestBody @Valid RequestRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        requestService.saveRequest(request, userDetails.getUser());
+    @PostMapping(consumes = { "multipart/form-data" })
+    public ResponseEntity<MsgResponseDto> saveRequest(
+            @Valid @RequestPart RequestRequest request,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+
+            requestService.saveRequest(request, userDetails.getUser(), images);
         return ResponseEntity.ok(new MsgResponseDto("요청 보내기 완료.", HttpStatus.CREATED.value()));
     }
 

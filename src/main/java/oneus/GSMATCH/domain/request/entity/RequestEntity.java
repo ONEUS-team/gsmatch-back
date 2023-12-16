@@ -3,21 +3,16 @@
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import oneus.GSMATCH.domain.image.entity.ImageEntity;
 import oneus.GSMATCH.domain.chat.entity.RoomEntity;
 import oneus.GSMATCH.domain.user.entity.UserEntity;
-import oneus.GSMATCH.image.entity.ImageEntity;
 
-import java.util.ArrayList;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import lombok.*;
-import oneus.GSMATCH.domain.user.entity.UserEntity;
-import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
-import java.util.List;
+import static oneus.GSMATCH.global.util.UserStateEnum.*;
 
 
     @Entity
@@ -71,6 +66,8 @@ import java.util.List;
         @Column(name = "likes_id")
         private List<Long> likesId;
 
+        @OneToMany(mappedBy = "requestId", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<ImageEntity> requestImagesList;
         @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, orphanRemoval = true)
         private List<RoomEntity> roomEntityList;
 
@@ -93,8 +90,3 @@ import java.util.List;
         MALE,
         FEMALE;
     }
-
-/*
-    @OneToMany(mappedBy = "requestId", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ImageEntity> requestImagesList;
-*/

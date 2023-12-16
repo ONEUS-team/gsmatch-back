@@ -17,4 +17,5 @@ public class RequestsResponse {
     private String content;
     private RequestType requestType;
     private String authorName;
+    private String image;
 }
