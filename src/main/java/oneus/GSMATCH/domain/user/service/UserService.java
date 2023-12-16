@@ -34,13 +34,22 @@ public class UserService {
 
     public void signup(SignupRequest signupRequestDto) {
         String username = signupRequestDto.getUsername();
+        String email = signupRequestDto.getEmail();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
 
+        String emailIdRegex = "gsm.hs.kr";
+
         // 회원 중복 확인
-        boolean isUserDuplicated = userRepository.existsByName(username);
-        if (isUserDuplicated) {
+        boolean isUserNameDuplicated = userRepository.existsByName(username);
+        boolean isUserEmailDuplicated = userRepository.existsByEmail(email);
+        if (isUserNameDuplicated || isUserEmailDuplicated) {
             throw new CustomException(DUPLICATED_USERNAME);
         }
+
+        int index = email.indexOf("@");
+        String emailDomain = email.substring(index + 1);
+        if (!emailDomain.equals(emailIdRegex))
+            throw new CustomException(NOT_GSM_EMAIL);
 
         // 사용자 ROLE 확인 (admin = true 일 경우 아래 코드 수행)
         UserRoleEnum role = UserRoleEnum.USER;
