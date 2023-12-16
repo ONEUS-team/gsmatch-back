@@ -37,8 +37,6 @@ public class ResponseService {
 
     private ResponseInfo mapToRequestInfo(RequestEntity request, Long id) {
 
-        List<Long> requestImagesIds = Collections.emptyList();
-        List<String> imageNames = Collections.emptyList();
         String image = null;
 
         if (request.getRequestImagesList() != null && !request.getRequestImagesList().isEmpty()) {
@@ -53,7 +51,7 @@ public class ResponseService {
                 .authorName(request.getAuthor().getName())
                 .requestType(request.getRequestType())
                 .likes(request.getLikesId().contains(id))
-                .Image(image)
+                .image(image)
                 .build();
     }
     @Transactional

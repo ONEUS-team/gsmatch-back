@@ -18,5 +18,5 @@ public class ResponseInfo {
     private Boolean requestOnly;
     private String title;
     private String content;
-    private String Image;
+    private String image;
 }
