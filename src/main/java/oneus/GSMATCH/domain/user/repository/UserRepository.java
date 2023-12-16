@@ -19,7 +19,4 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     List<UserEntity> findByGradeInAndMajorInAndUsersIdNot(List<Grade> grade, List<Major> majors, Long userId);
 
-//    @Modifying
-//    void updateByPointsById (Long id, Integer point);
-
 }
