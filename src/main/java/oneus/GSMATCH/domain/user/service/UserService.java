@@ -116,14 +116,22 @@ public class UserService {
                 .major(toDtoUser.getMajor())
                 .type(toDtoUser.getType())
                 .requestList(toDtoUser.getRequestList().stream()
-                        .map(request -> RequestsResponse.builder()
-                                .requestId(request.getRequestId())
-                                .title(request.getTitle())
-                                .content(request.getContent())
-                                .requestType(request.getRequestType())
-                                .authorName(request.getAuthor().getName())
-                                .build()).collect(Collectors.toList()))
+                        .map(request -> {
+                            String image = null;
+                            if (request.getRequestImagesList() != null && !request.getRequestImagesList().isEmpty()) {
+                                image = "/images/" + request.getRequestImagesList().get(0).getImageName();
+                            }
+                            return RequestsResponse.builder()
+                                    .requestId(request.getRequestId())
+                                    .title(request.getTitle())
+                                    .content(request.getContent())
+                                    .requestType(request.getRequestType())
+                                    .authorName(request.getAuthor().getName())
+                                    .image(image)
+                                    .build();
+                        }).collect(Collectors.toList()))
                 .build();
+
     }
 
     // 유저 타입 수정
