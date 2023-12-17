@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public interface RequestRepository extends JpaRepository<RequestEntity, Long> {
     boolean existsByRequestId(Long requestId);
-
     void deleteByRequestId(Long requestId);
     Integer countByAuthor(UserEntity user);
-
 }

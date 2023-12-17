@@ -4,6 +4,8 @@ import lombok.*;
 import oneus.GSMATCH.domain.request.dto.response.Author;
 import oneus.GSMATCH.global.util.UserStateEnum.*;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,4 +18,5 @@ public class InfoRequest {
     private Author author;
     private RequestType requestType;
     private Boolean likes;
+    private List<String> imageNames;
 }
