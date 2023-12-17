@@ -21,24 +21,21 @@ public class Point {
 
         userEntity.setPoint(userEntity.getPoint() + 6);
 
-        levelUp(id);
+        levelUp(userEntity);
         userRepository.save(userEntity);
     }
 
-    private void levelUp(Long id) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
-
-        int point = user.getPoint();
+    private void levelUp(UserEntity userEntity) {
+        int point = userEntity.getPoint();
 
         if (point >= 160) {
-            processLevelUp(user, 5, 0);
+            processLevelUp(userEntity, 5, 0);
         } else if (point >= 80) {
-            processLevelUp(user, 4, 80);
+            processLevelUp(userEntity, 4, 80);
         } else if (point >= 50) {
-            processLevelUp(user, 3, 50);
+            processLevelUp(userEntity, 3, 50);
         } else if (point >= 20) {
-            processLevelUp(user, 2, 20);
+            processLevelUp(userEntity, 2, 20);
         }
     }
 
