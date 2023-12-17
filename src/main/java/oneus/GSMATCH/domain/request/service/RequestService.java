@@ -15,6 +15,7 @@ import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
 import oneus.GSMATCH.global.exception.ErrorCode;
+import oneus.GSMATCH.global.level.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,10 +34,11 @@ public class RequestService {
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
-    
+    private final Point point;
+
+    // 이미지 포함한 요청 저장
     @Transactional
     public void saveRequest(RequestRequest createRequest, UserEntity userEntity, List<MultipartFile> images) throws IOException {
-
         ableSendRequest(userEntity);
         RequestEntity requestEntity = createRequest.toEntity(userEntity);
 
@@ -55,6 +57,7 @@ public class RequestService {
                 RequestEntity request = requestRepository.save(requestEntity);
 
                 saveImage(images, request);
+                point.requestPoint(userEntity.getUsersId());
             }
             // 일반요청
             else {
@@ -66,6 +69,7 @@ public class RequestService {
                 RequestEntity request = requestRepository.save(requestEntity);
 
                 saveImage(images, request);
+                point.requestPoint(userEntity.getUsersId());
             }
         } else{
             if (createRequest.getIsOnlyone() != null && createRequest.getIsOnlyone()) {
@@ -74,6 +78,7 @@ public class RequestService {
                 requestEntity.setRequestOnly(true);
                 RequestEntity request = requestRepository.save(requestEntity);
 
+                point.requestPoint(userEntity.getUsersId());
             }
             // 일반요청
             else {
@@ -83,9 +88,13 @@ public class RequestService {
                 requestEntity.setRecipientsId(recipientsList);
                 requestEntity.setRequestOnly(false);
                 RequestEntity request = requestRepository.save(requestEntity);
+
+                point.requestPoint(userEntity.getUsersId());
             }
         }
     }
+
+
 
     @Transactional(readOnly = true)
     public RangeResponse rangeRequest(RequestRequest requestRequest, UserEntity userEntity) {
