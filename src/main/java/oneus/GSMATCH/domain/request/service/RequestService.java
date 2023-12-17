@@ -132,6 +132,7 @@ public class RequestService {
                         .grade(request.getAuthor().getGrade())
                         .type(request.getAuthor().getType())
                         .level(request.getAuthor().getLevel())
+                        .major(request.getAuthor().getMajor())
                         .build())
                 .imageNames(imageNames)
                 .build();

@@ -15,4 +15,5 @@ public class Author {
     private Grade grade;
     private Type type;
     private Integer level;
+    private Major major;
 }

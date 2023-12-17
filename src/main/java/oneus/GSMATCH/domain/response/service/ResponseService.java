@@ -84,6 +84,7 @@ public class ResponseService {
                             .grade(request.getAuthor().getGrade())
                             .type(request.getAuthor().getType())
                             .level(request.getAuthor().getLevel())
+                            .major(request.getAuthor().getMajor())
                             .build())
                     .likes(request.getLikesId().contains(userDetails.getUser().getUsersId()))
                     .imageNames(imageNames)
