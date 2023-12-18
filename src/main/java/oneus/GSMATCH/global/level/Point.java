@@ -15,11 +15,11 @@ public class Point {
     private final UserRepository userRepository;
 
     @Transactional
-    public void requestPoint(Long id) {
+    public void requestPoint(Long id, Integer point) {
         UserEntity userEntity = userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(NOT_MATCH_INFORMATION));
 
-        userEntity.setPoint(userEntity.getPoint() + 6);
+        userEntity.setPoint(userEntity.getPoint() + point);
 
         levelUp(userEntity);
         userRepository.save(userEntity);
