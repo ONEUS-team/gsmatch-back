@@ -79,6 +79,14 @@ public class ChatService {
     }
 
     public List<ChatResponse> chatListFind(Long roomId, UserEntity user) {
+
+        RoomEntity room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CHAT));
+
+        if (!Objects.equals(room.getToUser().getUsersId(), user.getUsersId()) &&
+                !Objects.equals(room.getFromUser().getUsersId(), user.getUsersId()))
+            throw new CustomException(ErrorCode.DONT_ACCESS_CHAT);
+
          List<ChatResponse> chats = chatRepository.findAllByRoomId(roomId).stream()
                 .map(chat -> ChatResponse.builder()
                         .id(chat.getId())
