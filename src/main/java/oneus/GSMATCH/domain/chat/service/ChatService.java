@@ -12,6 +12,7 @@ import oneus.GSMATCH.domain.user.entity.UserEntity;
 import oneus.GSMATCH.domain.user.repository.UserRepository;
 import oneus.GSMATCH.global.exception.CustomException;
 import oneus.GSMATCH.global.exception.ErrorCode;
+import oneus.GSMATCH.global.level.Point;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
     private final RequestRepository requestRepository;
+    private final Point point;
 
     public RoomCreateResponse createRoom(Long toUserId, Long requestId) {
         RequestEntity request = requestRepository.findById(requestId)
@@ -44,6 +46,8 @@ public class ChatService {
         if (roomRepository.existsByRequestAndToUser(request, toUser)) throw new CustomException(ErrorCode.DUPLICATED_CHAT);
 
         RoomEntity room = roomRepository.save(RoomEntity.createRoom(request, toUser, fromUser));
+
+        point.requestPoint(toUserId, 10);
 
         return new RoomCreateResponse(room.getId());
     }
@@ -75,6 +79,14 @@ public class ChatService {
     }
 
     public List<ChatResponse> chatListFind(Long roomId, UserEntity user) {
+
+        RoomEntity room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CHAT));
+
+        if (!Objects.equals(room.getToUser().getUsersId(), user.getUsersId()) &&
+                !Objects.equals(room.getFromUser().getUsersId(), user.getUsersId()))
+            throw new CustomException(ErrorCode.DONT_ACCESS_CHAT);
+
          List<ChatResponse> chats = chatRepository.findAllByRoomId(roomId).stream()
                 .map(chat -> ChatResponse.builder()
                         .id(chat.getId())
@@ -104,6 +116,17 @@ public class ChatService {
                 .message(chat.getMessage())
                 .sendDate(chat.getSendDate())
                 .build();
+    }
+
+    public void roomDelete(Long roomId, UserEntity user) {
+        RoomEntity room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CHAT));
+
+        if (!Objects.equals(room.getToUser().getUsersId(), user.getUsersId()) &&
+                !Objects.equals(room.getFromUser().getUsersId(), user.getUsersId()))
+            throw new CustomException(ErrorCode.DONT_ACCESS_CHAT);
+
+        roomRepository.delete(room);
     }
 
     private Partner setPartner(RoomEntity room, UserEntity user) {

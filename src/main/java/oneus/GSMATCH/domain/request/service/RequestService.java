@@ -57,7 +57,7 @@ public class RequestService {
                 RequestEntity request = requestRepository.save(requestEntity);
 
                 saveImage(images, request);
-                point.requestPoint(userEntity.getUsersId());
+                point.requestPoint(userEntity.getUsersId(), 6);
             }
             // 일반요청
             else {
@@ -69,7 +69,7 @@ public class RequestService {
                 RequestEntity request = requestRepository.save(requestEntity);
 
                 saveImage(images, request);
-                point.requestPoint(userEntity.getUsersId());
+                point.requestPoint(userEntity.getUsersId(), 6);
             }
         } else{
             if (createRequest.getIsOnlyone() != null && createRequest.getIsOnlyone()) {
@@ -78,7 +78,7 @@ public class RequestService {
                 requestEntity.setRequestOnly(true);
                 RequestEntity request = requestRepository.save(requestEntity);
 
-                point.requestPoint(userEntity.getUsersId());
+                point.requestPoint(userEntity.getUsersId(), 6);
             }
             // 일반요청
             else {
@@ -89,7 +89,7 @@ public class RequestService {
                 requestEntity.setRequestOnly(false);
                 RequestEntity request = requestRepository.save(requestEntity);
 
-                point.requestPoint(userEntity.getUsersId());
+                point.requestPoint(userEntity.getUsersId(), 6);
             }
         }
     }

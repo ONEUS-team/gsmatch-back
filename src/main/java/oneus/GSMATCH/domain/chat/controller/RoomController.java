@@ -7,6 +7,8 @@ import oneus.GSMATCH.domain.chat.dto.response.RoomCreateResponse;
 import oneus.GSMATCH.domain.chat.dto.response.RoomResponse;
 import oneus.GSMATCH.domain.chat.service.ChatService;
 import oneus.GSMATCH.global.security.UserDetailsImpl;
+import oneus.GSMATCH.global.util.MsgResponseDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +39,11 @@ public class RoomController {
     @GetMapping("/chat/{roomId}")
     public ResponseEntity<List<ChatResponse>> findChatList(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(chatService.chatListFind(roomId, userDetails.getUser()));
+    }
+
+    @DeleteMapping("/room/{roomId}")
+    public ResponseEntity<MsgResponseDto> deleteRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        chatService.roomDelete(roomId, userDetails.getUser());
+        return ResponseEntity.ok(new MsgResponseDto("채팅방이 삭제되었습니다.", HttpStatus.NO_CONTENT.value()));
     }
 }
