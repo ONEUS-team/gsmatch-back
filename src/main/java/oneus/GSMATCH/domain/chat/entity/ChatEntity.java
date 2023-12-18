@@ -6,6 +6,7 @@ import oneus.GSMATCH.domain.user.entity.UserEntity;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Getter
@@ -36,7 +37,7 @@ public class ChatEntity {
         this.room = room;
         this.sender = sender;
         this.message = message;
-        this.sendDate = LocalDateTime.now();
+        this.sendDate = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 
 
