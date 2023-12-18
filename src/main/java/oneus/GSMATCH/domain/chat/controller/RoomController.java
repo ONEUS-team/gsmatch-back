@@ -2,7 +2,6 @@ package oneus.GSMATCH.domain.chat.controller;
 
 import lombok.RequiredArgsConstructor;
 import oneus.GSMATCH.domain.chat.dto.request.RoomCreateRequest;
-import oneus.GSMATCH.domain.chat.dto.request.RoomDeleteRequest;
 import oneus.GSMATCH.domain.chat.dto.response.ChatResponse;
 import oneus.GSMATCH.domain.chat.dto.response.RoomCreateResponse;
 import oneus.GSMATCH.domain.chat.dto.response.RoomResponse;
@@ -42,8 +41,9 @@ public class RoomController {
         return ResponseEntity.ok(chatService.chatListFind(roomId, userDetails.getUser()));
     }
 
-    @DeleteMapping("/chat/")
-    public ResponseEntity<MsgResponseDto> deleteRoom(@RequestBody RoomDeleteRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @DeleteMapping("/room/{roomId}")
+    public ResponseEntity<MsgResponseDto> deleteRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        chatService.roomDelete(roomId, userDetails.getUser());
         return ResponseEntity.ok(new MsgResponseDto("채팅방이 삭제되었습니다.", HttpStatus.NO_CONTENT.value()));
     }
 }

@@ -106,6 +106,17 @@ public class ChatService {
                 .build();
     }
 
+    public void roomDelete(Long roomId, UserEntity user) {
+        RoomEntity room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CHAT));
+
+        if (Objects.equals(room.getToUser().getUsersId(), user.getUsersId()) ||
+                Objects.equals(room.getFromUser().getUsersId(), user.getUsersId()))
+            throw new CustomException(ErrorCode.DONT_ACCESS_CHAT);
+
+        roomRepository.delete(room);
+    }
+
     private Partner setPartner(RoomEntity room, UserEntity user) {
         return room.getToUser().getUsersId().equals(user.getUsersId()) ? Partner.builder()
                 .id(room.getFromUser().getUsersId())

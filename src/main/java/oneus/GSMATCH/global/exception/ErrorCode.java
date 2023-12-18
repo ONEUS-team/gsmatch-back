@@ -32,6 +32,8 @@ public enum ErrorCode {
 
     NOT_FOUND_CHAT(HttpStatus.BAD_REQUEST, "채팅을 찾을 수 없습니다."),
 
+    DONT_ACCESS_CHAT(HttpStatus.BAD_REQUEST, "해당 채팅에 참여자가 아닙니다."),
+
     DUPLICATED_CHAT(HttpStatus.BAD_REQUEST, "중복된 채팅방 생성 요청입니다.");
 
     private final HttpStatus httpStatus;
