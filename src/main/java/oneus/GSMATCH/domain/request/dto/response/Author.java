@@ -11,6 +11,7 @@ import static oneus.GSMATCH.global.util.UserStateEnum.*;
 @AllArgsConstructor
 @Builder
 public class Author {
+    private Long id;
     private String name;
     private Grade grade;
     private Type type;

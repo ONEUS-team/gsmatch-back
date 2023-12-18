@@ -128,6 +128,7 @@ public class RequestService {
                 .content(request.getContent())
                 .requestOnly(request.getRequestOnly())
                 .author(Author.builder()
+                        .id(request.getAuthor().getUsersId())
                         .name(request.getAuthor().getName())
                         .grade(request.getAuthor().getGrade())
                         .type(request.getAuthor().getType())
