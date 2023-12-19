@@ -29,20 +29,19 @@ public class Point {
         int point = userEntity.getPoint();
 
         if (point >= 160) {
-            processLevelUp(userEntity, 5, 0);
+            LevelUp(userEntity, 5);
         } else if (point >= 80) {
-            processLevelUp(userEntity, 4, 80);
+            LevelUp(userEntity, 4);
         } else if (point >= 50) {
-            processLevelUp(userEntity, 3, 50);
+            LevelUp(userEntity, 3);
         } else if (point >= 20) {
-            processLevelUp(userEntity, 2, 20);
+            LevelUp(userEntity, 2);
         }
     }
 
-    private void processLevelUp(UserEntity user, int newLevel, int pointReduction) {
+    private void LevelUp(UserEntity user, int newLevel) {
         if (newLevel > user.getLevel()){
             user.setLevel(newLevel);
-            user.setPoint(user.getPoint() - pointReduction);
         }
     }
 }
