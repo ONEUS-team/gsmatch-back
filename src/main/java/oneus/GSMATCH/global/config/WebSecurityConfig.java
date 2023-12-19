@@ -106,7 +106,7 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://dev-gsmatch.vercel.app", "https://gsmatch.vercel.app"));
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("Authorization");
         configuration.addExposedHeader("Refresh-Token");
