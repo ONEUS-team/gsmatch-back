@@ -23,10 +23,10 @@ repositories {
 
 dependencies {
 	// postgresql
-//	implementation 'org.postgresql:postgresql'
+	implementation 'org.postgresql:postgresql'
 
 	// mysql
-	implementation 'mysql:mysql-connector-java:8.0.33'
+//	implementation 'mysql:mysql-connector-java:8.0.33'
 
 	// h2
 //	implementation 'com.h2database:h2-mvstore:2.1.214'
