@@ -46,4 +46,9 @@ public class RoomController {
         chatService.roomDelete(roomId, userDetails.getUser());
         return ResponseEntity.ok(new MsgResponseDto("채팅방이 삭제되었습니다.", HttpStatus.NO_CONTENT.value()));
     }
+
+    @GetMapping("/")
+    public ResponseEntity<Void> health() {
+        return ResponseEntity.ok().build();
+    }
 }
