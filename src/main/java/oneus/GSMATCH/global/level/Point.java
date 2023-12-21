@@ -28,7 +28,7 @@ public class Point {
     private void levelUp(UserEntity userEntity) {
         int point = userEntity.getPoint();
 
-        if (point >= 160) {
+        if (point >= 110) {
             LevelUp(userEntity, 5);
         } else if (point >= 80) {
             LevelUp(userEntity, 4);
